@@ -51,11 +51,15 @@ export default function CalendarScreen() {
 
   const bookingsByDate = useMemo(() => {
     const map: Record<string, Booking[]> = {};
+    const todayStr = formatDate(today);
     bookings.forEach((booking) => {
-      if (!map[booking.scheduledDate]) {
-        map[booking.scheduledDate] = [];
+      // Only include present and future bookings
+      if (booking.scheduledDate >= todayStr) {
+        if (!map[booking.scheduledDate]) {
+          map[booking.scheduledDate] = [];
+        }
+        map[booking.scheduledDate].push(booking);
       }
-      map[booking.scheduledDate].push(booking);
     });
     return map;
   }, [bookings]);
