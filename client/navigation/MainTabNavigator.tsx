@@ -5,9 +5,9 @@ import { BlurView } from 'expo-blur';
 import { Platform, StyleSheet } from 'react-native';
 import HomeStackNavigator from '@/navigation/HomeStackNavigator';
 import CalendarStackNavigator from '@/navigation/CalendarStackNavigator';
+import ProfileStackNavigator from '@/navigation/ProfileStackNavigator';
 import EarningsScreen from '@/screens/EarningsScreen';
 import HistoryScreen from '@/screens/HistoryScreen';
-import ProfileScreen from '@/screens/ProfileScreen';
 import { useTheme } from '@/hooks/useTheme';
 import { useApp } from '@/context/AppContext';
 import { BrandColors } from '@/constants/theme';
@@ -119,16 +119,14 @@ export default function MainTabNavigator({ onLogout }: MainTabNavigatorProps) {
       <Tab.Screen
         name="ProfileTab"
         options={{
-          headerShown: true,
-          headerTitle: t('profile'),
-          ...headerConfig,
+          headerShown: false,
           title: t('profile'),
           tabBarIcon: ({ color, size }) => (
             <Feather name="user" size={size} color={color} />
           ),
         }}
       >
-        {() => <ProfileScreen onLogout={onLogout} />}
+        {() => <ProfileStackNavigator onLogout={onLogout} />}
       </Tab.Screen>
     </Tab.Navigator>
   );

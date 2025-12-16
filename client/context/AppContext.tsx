@@ -50,6 +50,7 @@ interface AppContextType extends AppState {
   login: (phone: string) => void;
   logout: () => void;
   updateBookingStatus: (bookingId: string, status: BookingStatus) => void;
+  updateOperator: (updates: Partial<Operator>) => void;
   getBookingsByStatus: (status: BookingStatus | BookingStatus[]) => Booking[];
   getTodayBookings: () => Booking[];
   getEarnings: (period: 'today' | 'week' | 'month') => { total: number; count: number; acres: number };
@@ -230,6 +231,13 @@ export function AppProvider({ children }: { children: ReactNode }) {
     }));
   }, []);
 
+  const updateOperator = useCallback((updates: Partial<Operator>) => {
+    setState(prev => ({
+      ...prev,
+      operator: prev.operator ? { ...prev.operator, ...updates } : null,
+    }));
+  }, []);
+
   const getBookingsByStatus = useCallback((status: BookingStatus | BookingStatus[]) => {
     const statuses = Array.isArray(status) ? status : [status];
     return state.bookings.filter(b => statuses.includes(b.status));
@@ -278,6 +286,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         login,
         logout,
         updateBookingStatus,
+        updateOperator,
         getBookingsByStatus,
         getTodayBookings,
         getEarnings,

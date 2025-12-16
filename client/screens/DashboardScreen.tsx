@@ -67,13 +67,6 @@ export default function DashboardScreen({ navigation }: Props) {
   const todayBookings = getTodayBookings();
   const todayEarnings = getEarnings('today');
 
-  const getGreeting = () => {
-    const hour = new Date().getHours();
-    if (hour < 12) return t('goodMorning');
-    if (hour < 17) return t('goodAfternoon');
-    return t('goodEvening');
-  };
-
   const pendingCount = getBookingsByStatus('pending').length;
   const activeCount = getBookingsByStatus(['active', 'in_progress']).length;
 
@@ -229,11 +222,27 @@ export default function DashboardScreen({ navigation }: Props) {
           </Pressable>
         </Modal>
 
-        <Card style={styles.greetingCard}>
-          <ThemedText style={[styles.greeting, { color: theme.textSecondary }]}>
-            {getGreeting()},
-          </ThemedText>
-          <ThemedText style={styles.operatorName}>{operator?.name || 'Operator'}</ThemedText>
+        <Card style={styles.pilotInfoCard}>
+          <View style={styles.pilotInfoHeader}>
+            <View style={styles.pilotAvatar}>
+              <Feather name="user" size={24} color={BrandColors.white} />
+            </View>
+            <View style={styles.pilotDetails}>
+              <ThemedText style={styles.pilotName}>{operator?.name || 'Pilot'}</ThemedText>
+              <View style={styles.pilotInfoRow}>
+                <Feather name="map-pin" size={12} color={theme.textSecondary} />
+                <ThemedText style={[styles.pilotInfoText, { color: theme.textSecondary }]}>
+                  {operator?.address || t('homeLocation')}
+                </ThemedText>
+              </View>
+              <View style={styles.pilotInfoRow}>
+                <Feather name="airplay" size={12} color={theme.textSecondary} />
+                <ThemedText style={[styles.pilotInfoText, { color: theme.textSecondary }]}>
+                  {operator?.droneModel || t('droneModel')}
+                </ThemedText>
+              </View>
+            </View>
+          </View>
         </Card>
 
         <View style={styles.statsRow}>
@@ -431,15 +440,37 @@ const styles = StyleSheet.create({
   weatherErrorText: {
     ...Typography.small,
   },
-  greetingCard: {
+  pilotInfoCard: {
     marginBottom: Spacing.md,
   },
-  greeting: {
-    ...Typography.body,
+  pilotInfoHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.md,
   },
-  operatorName: {
+  pilotAvatar: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: BrandColors.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  pilotDetails: {
+    flex: 1,
+    gap: Spacing.xs,
+  },
+  pilotName: {
     ...Typography.h3,
-    marginTop: Spacing.xs,
+    color: BrandColors.white,
+  },
+  pilotInfoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.xs,
+  },
+  pilotInfoText: {
+    ...Typography.small,
   },
   statsRow: {
     flexDirection: 'row',

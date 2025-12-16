@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, ScrollView, Pressable, Alert } from 'react-native';
+import { View, StyleSheet, ScrollView, Pressable, Alert, Modal, TextInput } from 'react-native';
 import { useHeaderHeight } from '@react-navigation/elements';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Feather } from '@expo/vector-icons';
 import { ThemedText } from '@/components/ThemedText';
 import { GradientBackground } from '@/components/GradientBackground';
@@ -10,6 +12,10 @@ import { useTheme } from '@/hooks/useTheme';
 import { useApp } from '@/context/AppContext';
 import { languages } from '@/constants/translations';
 import { BrandColors, Spacing, BorderRadius, Typography } from '@/constants/theme';
+import { LinearGradient } from 'expo-linear-gradient';
+import { ProfileStackParamList } from '@/navigation/ProfileStackNavigator';
+
+type NavigationProp = NativeStackNavigationProp<ProfileStackParamList>;
 
 interface ProfileScreenProps {
   onLogout: () => void;
@@ -18,9 +24,12 @@ interface ProfileScreenProps {
 export default function ProfileScreen({ onLogout }: ProfileScreenProps) {
   const headerHeight = useHeaderHeight();
   const tabBarHeight = useBottomTabBarHeight();
+  const navigation = useNavigation<NavigationProp>();
   const { theme } = useTheme();
-  const { t, operator, language, setLanguage } = useApp();
+  const { t, operator, language, setLanguage, updateOperator } = useApp();
   const [showLanguages, setShowLanguages] = useState(false);
+  const [showLocationModal, setShowLocationModal] = useState(false);
+  const [newAddress, setNewAddress] = useState(operator?.address || '');
 
   const handleLogout = () => {
     Alert.alert(t('logout'), t('logoutConfirm'), [
@@ -44,6 +53,18 @@ export default function ProfileScreen({ onLogout }: ProfileScreenProps) {
     ]);
   };
 
+  const handleSaveLocation = () => {
+    if (newAddress.trim()) {
+      updateOperator({ address: newAddress.trim() });
+      setShowLocationModal(false);
+    }
+  };
+
+  const handleEditLocation = () => {
+    setNewAddress(operator?.address || '');
+    setShowLocationModal(true);
+  };
+
   const currentLanguage = languages.find((l) => l.code === language);
 
   const sections = [
@@ -53,7 +74,7 @@ export default function ProfileScreen({ onLogout }: ProfileScreenProps) {
         { icon: 'user', label: t('name'), value: operator?.name },
         { icon: 'phone', label: t('phoneNumber'), value: operator?.phone },
         { icon: 'mail', label: t('email'), value: operator?.email || '-' },
-        { icon: 'map-pin', label: t('address'), value: operator?.address || '-' },
+        { icon: 'map-pin', label: t('homeLocation'), value: operator?.address || '-', editable: true, onEdit: handleEditLocation },
       ],
     },
     {
@@ -78,10 +99,10 @@ export default function ProfileScreen({ onLogout }: ProfileScreenProps) {
   ];
 
   const supportLegalItems = [
-    { icon: 'help-circle', label: t('helpCenter'), onPress: () => {} },
-    { icon: 'message-circle', label: t('contactSupport'), onPress: () => {} },
-    { icon: 'file-text', label: t('termsOfService'), onPress: () => {} },
-    { icon: 'shield', label: t('privacyPolicy'), onPress: () => {} },
+    { icon: 'help-circle', label: t('helpCenter'), onPress: () => navigation.navigate('HelpCenter') },
+    { icon: 'message-circle', label: t('contactSupport'), onPress: () => navigation.navigate('ContactSupport') },
+    { icon: 'file-text', label: t('termsOfService'), onPress: () => navigation.navigate('TermsOfService') },
+    { icon: 'shield', label: t('privacyPolicy'), onPress: () => navigation.navigate('PrivacyPolicy') },
   ];
 
   const accountItems = [
@@ -154,6 +175,14 @@ export default function ProfileScreen({ onLogout }: ProfileScreenProps) {
                     </ThemedText>
                     <ThemedText style={styles.itemValue}>{item.value}</ThemedText>
                   </View>
+                  {item.editable ? (
+                    <Pressable
+                      style={styles.editButton}
+                      onPress={item.onEdit}
+                    >
+                      <Feather name="edit-2" size={16} color={BrandColors.primary} />
+                    </Pressable>
+                  ) : null}
                 </View>
               ))}
             </Card>
@@ -257,6 +286,44 @@ export default function ProfileScreen({ onLogout }: ProfileScreenProps) {
           </Card>
         </View>
       </ScrollView>
+
+      <Modal
+        visible={showLocationModal}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowLocationModal(false)}
+      >
+        <Pressable
+          style={styles.modalOverlay}
+          onPress={() => setShowLocationModal(false)}
+        >
+          <View style={[styles.modalContent, { backgroundColor: theme.backgroundSecondary }]}>
+            <ThemedText style={styles.modalTitle}>{t('editHomeLocation')}</ThemedText>
+            <TextInput
+              style={[
+                styles.modalInput,
+                { backgroundColor: 'rgba(255,255,255,0.1)', color: BrandColors.white },
+              ]}
+              value={newAddress}
+              onChangeText={setNewAddress}
+              placeholder={t('homeLocation')}
+              placeholderTextColor={theme.textSecondary}
+              multiline
+              numberOfLines={3}
+            />
+            <Pressable onPress={handleSaveLocation}>
+              <LinearGradient
+                colors={[BrandColors.primary, BrandColors.teal]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={styles.modalButton}
+              >
+                <ThemedText style={styles.modalButtonText}>{t('saveLocation')}</ThemedText>
+              </LinearGradient>
+            </Pressable>
+          </View>
+        </Pressable>
+      </Modal>
     </GradientBackground>
   );
 }
@@ -373,5 +440,43 @@ const styles = StyleSheet.create({
   },
   languageName: {
     ...Typography.body,
+  },
+  editButton: {
+    padding: Spacing.sm,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: Spacing.xl,
+  },
+  modalContent: {
+    width: '100%',
+    maxWidth: 340,
+    borderRadius: BorderRadius.xl,
+    padding: Spacing.xl,
+  },
+  modalTitle: {
+    ...Typography.h4,
+    textAlign: 'center',
+    marginBottom: Spacing.lg,
+  },
+  modalInput: {
+    ...Typography.body,
+    borderRadius: BorderRadius.md,
+    padding: Spacing.md,
+    marginBottom: Spacing.lg,
+    minHeight: 80,
+    textAlignVertical: 'top',
+  },
+  modalButton: {
+    paddingVertical: Spacing.md,
+    borderRadius: BorderRadius.md,
+    alignItems: 'center',
+  },
+  modalButtonText: {
+    ...Typography.bodyBold,
+    color: BrandColors.white,
   },
 });
