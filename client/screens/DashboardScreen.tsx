@@ -63,7 +63,6 @@ export default function DashboardScreen({ navigation }: Props) {
     setShowLanguageModal(false);
   };
 
-  const activeBookings = getBookingsByStatus(['pending', 'active', 'in_progress']);
   const todayBookings = getTodayBookings();
   const todayEarnings = getEarnings('today');
 
@@ -278,36 +277,12 @@ export default function DashboardScreen({ navigation }: Props) {
         </View>
 
         <View style={styles.sectionHeader}>
-          <ThemedText style={styles.sectionTitle}>{t('activeBookings')}</ThemedText>
+          <ThemedText style={styles.sectionTitle}>{t('todaySchedule')}</ThemedText>
           <Pressable onPress={() => navigation.navigate('BookingsList')}>
             <ThemedText style={[styles.viewAll, { color: BrandColors.white }]}>
               {t('viewAll')}
             </ThemedText>
           </Pressable>
-        </View>
-
-        {activeBookings.length > 0 ? (
-          activeBookings.slice(0, 3).map((booking) => (
-            <BookingCard
-              key={booking.id}
-              booking={booking}
-              onPress={() => navigation.navigate('BookingDetail', { bookingId: booking.id })}
-            />
-          ))
-        ) : (
-          <Card style={styles.emptyCard}>
-            <Feather name="check-circle" size={48} color={BrandColors.white} />
-            <ThemedText style={[styles.emptyText, { color: theme.textSecondary }]}>
-              {t('noActiveBookings')}
-            </ThemedText>
-            <ThemedText style={[styles.emptySubtext, { color: theme.textSecondary }]}>
-              {t('allCaughtUp')}
-            </ThemedText>
-          </Card>
-        )}
-
-        <View style={styles.sectionHeader}>
-          <ThemedText style={styles.sectionTitle}>{t('todaySchedule')}</ThemedText>
         </View>
 
         {todayBookings.length > 0 ? (

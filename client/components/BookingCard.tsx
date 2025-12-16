@@ -51,6 +51,12 @@ export function BookingCard({ booking, onPress, showActions = false, compact = f
                   - {booking.acreage} {t('acres')}
                 </ThemedText>
               </View>
+              <View style={styles.cropRow}>
+                <Feather name="layers" size={12} color={theme.textSecondary} />
+                <ThemedText style={[styles.cropText, { color: theme.textSecondary }]}>
+                  {booking.cropType} ({booking.sprayType === 'pesticide' ? t('pesticide') : t('fertilizer')})
+                </ThemedText>
+              </View>
             </View>
             <StatusBadge status={booking.status} small />
           </View>
@@ -73,6 +79,13 @@ export function BookingCard({ booking, onPress, showActions = false, compact = f
             </View>
           </View>
           <StatusBadge status={booking.status} />
+        </View>
+
+        <View style={styles.cropDetails}>
+          <Feather name="layers" size={14} color={theme.textSecondary} />
+          <ThemedText style={[styles.cropDetailText, { color: theme.textSecondary }]}>
+            {booking.cropType} - {booking.sprayType === 'pesticide' ? t('pesticide') : t('fertilizer')}
+          </ThemedText>
         </View>
 
         <View style={styles.details}>
@@ -188,6 +201,24 @@ const styles = StyleSheet.create({
     ...Typography.small,
   },
   acreage: {
+    ...Typography.small,
+  },
+  cropRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: Spacing.xs,
+    gap: 4,
+  },
+  cropText: {
+    ...Typography.small,
+  },
+  cropDetails: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.xs,
+    marginBottom: Spacing.sm,
+  },
+  cropDetailText: {
     ...Typography.small,
   },
   details: {
