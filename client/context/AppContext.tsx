@@ -19,6 +19,8 @@ export interface Booking {
   paymentStatus: 'paid' | 'unpaid';
   status: BookingStatus;
   completedAt?: string;
+  latitude: number;
+  longitude: number;
 }
 
 export interface Operator {
@@ -31,6 +33,8 @@ export interface Operator {
   droneModel: string;
   droneRegistration: string;
   insuranceExpiry: string;
+  homeLatitude: number;
+  homeLongitude: number;
 }
 
 interface AppState {
@@ -61,6 +65,8 @@ const mockOperator: Operator = {
   droneModel: 'DJI Agras T40',
   droneRegistration: 'UA-PB-2024-00567',
   insuranceExpiry: '2025-06-30',
+  homeLatitude: 30.9010,
+  homeLongitude: 75.8573,
 };
 
 const today = new Date();
@@ -81,6 +87,8 @@ const mockBookings: Booking[] = [
     amount: 4500,
     paymentStatus: 'unpaid',
     status: 'pending',
+    latitude: 30.8162,
+    longitude: 75.1741,
   },
   {
     id: '2',
@@ -97,6 +105,8 @@ const mockBookings: Booking[] = [
     amount: 2400,
     paymentStatus: 'paid',
     status: 'active',
+    latitude: 30.3815,
+    longitude: 75.5472,
   },
   {
     id: '3',
@@ -112,6 +122,8 @@ const mockBookings: Booking[] = [
     amount: 6000,
     paymentStatus: 'unpaid',
     status: 'pending',
+    latitude: 30.2331,
+    longitude: 75.8406,
   },
   {
     id: '4',
@@ -128,6 +140,8 @@ const mockBookings: Booking[] = [
     paymentStatus: 'paid',
     status: 'completed',
     completedAt: new Date(today.getTime() - 86400000).toISOString(),
+    latitude: 30.2110,
+    longitude: 74.9455,
   },
   {
     id: '5',
@@ -144,6 +158,8 @@ const mockBookings: Booking[] = [
     paymentStatus: 'paid',
     status: 'completed',
     completedAt: new Date(today.getTime() - 172800000).toISOString(),
+    latitude: 30.6740,
+    longitude: 74.7580,
   },
   {
     id: '6',
@@ -160,6 +176,8 @@ const mockBookings: Booking[] = [
     paymentStatus: 'paid',
     status: 'completed',
     completedAt: new Date(today.getTime() - 259200000).toISOString(),
+    latitude: 31.6340,
+    longitude: 74.8723,
   },
 ];
 

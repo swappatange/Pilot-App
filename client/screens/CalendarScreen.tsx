@@ -1,8 +1,8 @@
 import React, { useState, useMemo } from 'react';
-import { View, StyleSheet, ScrollView, Pressable, FlatList } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { View, StyleSheet, ScrollView, Pressable } from 'react-native';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useHeaderHeight } from '@react-navigation/elements';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { Feather } from '@expo/vector-icons';
 import { ThemedText } from '@/components/ThemedText';
 import { GradientBackground } from '@/components/GradientBackground';
@@ -10,6 +10,10 @@ import { Card } from '@/components/Card';
 import { useTheme } from '@/hooks/useTheme';
 import { useApp, Booking, BookingStatus } from '@/context/AppContext';
 import { BrandColors, Spacing, BorderRadius, Typography } from '@/constants/theme';
+
+type RootStackParamList = {
+  BookingDetail: { bookingId: string };
+};
 
 type FilterType = 'accepted' | 'all';
 
@@ -19,12 +23,24 @@ const MONTHS = [
   'July', 'August', 'September', 'October', 'November', 'December'
 ];
 
+function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
+  const R = 6371;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = 
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+    Math.sin(dLon/2) * Math.sin(dLon/2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  return R * c;
+}
+
 export default function CalendarScreen() {
-  const insets = useSafeAreaInsets();
   const tabBarHeight = useBottomTabBarHeight();
   const headerHeight = useHeaderHeight();
   const { theme } = useTheme();
-  const { t, bookings } = useApp();
+  const { t, bookings, operator } = useApp();
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   const today = new Date();
   const [currentMonth, setCurrentMonth] = useState(new Date(today.getFullYear(), today.getMonth(), 1));
@@ -46,18 +62,27 @@ export default function CalendarScreen() {
     return map;
   }, [bookings]);
 
-  const selectedBookings = useMemo(() => {
-    return bookingsByDate[selectedDate] || [];
-  }, [bookingsByDate, selectedDate]);
-
-  const todayBookings = useMemo(() => {
-    const todayStr = formatDate(today);
-    const todayList = bookingsByDate[todayStr] || [];
+  const selectedDateBookings = useMemo(() => {
+    const dateBookings = bookingsByDate[selectedDate] || [];
     if (routeFilter === 'accepted') {
-      return todayList.filter((b) => b.status === 'active' || b.status === 'in_progress');
+      return dateBookings.filter((b) => b.status === 'active' || b.status === 'in_progress');
     }
-    return todayList.filter((b) => b.status !== 'completed' && b.status !== 'cancelled');
-  }, [bookingsByDate, routeFilter]);
+    return dateBookings.filter((b) => b.status !== 'completed' && b.status !== 'cancelled');
+  }, [bookingsByDate, selectedDate, routeFilter]);
+
+  const sortedBookings = useMemo(() => {
+    return [...selectedDateBookings].sort((a, b) => {
+      const timeA = a.scheduledTime.replace(' AM', '').replace(' PM', '');
+      const timeB = b.scheduledTime.replace(' AM', '').replace(' PM', '');
+      const isPMA = a.scheduledTime.includes('PM');
+      const isPMB = b.scheduledTime.includes('PM');
+      const [hoursA, minutesA] = timeA.split(':').map(Number);
+      const [hoursB, minutesB] = timeB.split(':').map(Number);
+      const totalA = (isPMA && hoursA !== 12 ? hoursA + 12 : hoursA) * 60 + minutesA;
+      const totalB = (isPMB && hoursB !== 12 ? hoursB + 12 : hoursB) * 60 + minutesB;
+      return totalA - totalB;
+    });
+  }, [selectedDateBookings]);
 
   const getDaysInMonth = (date: Date) => {
     const year = date.getFullYear();
@@ -90,23 +115,6 @@ export default function CalendarScreen() {
         return BrandColors.danger;
       default:
         return BrandColors.gray500;
-    }
-  };
-
-  const getStatusLabel = (status: BookingStatus) => {
-    switch (status) {
-      case 'active':
-        return t('active');
-      case 'in_progress':
-        return t('inProgress');
-      case 'pending':
-        return t('pending');
-      case 'completed':
-        return t('completed');
-      case 'cancelled':
-        return t('cancel');
-      default:
-        return status;
     }
   };
 
@@ -161,66 +169,80 @@ export default function CalendarScreen() {
     return days;
   };
 
-  const renderBookingItem = (booking: Booking) => (
-    <Card key={booking.id} style={styles.bookingCard}>
-      <View style={styles.bookingHeader}>
-        <View style={styles.bookingInfo}>
-          <ThemedText style={styles.farmerName}>{booking.farmerName}</ThemedText>
-          <ThemedText style={[styles.bookingTime, { color: theme.textSecondary }]}>
-            {booking.scheduledTime}
-          </ThemedText>
-        </View>
-        <View style={[styles.statusBadge, { backgroundColor: getStatusColor(booking.status) + '20' }]}>
-          <ThemedText style={[styles.statusText, { color: getStatusColor(booking.status) }]}>
-            {getStatusLabel(booking.status)}
-          </ThemedText>
-        </View>
-      </View>
-      <View style={styles.bookingDetails}>
-        <View style={styles.detailRow}>
-          <Feather name="map-pin" size={14} color={theme.textSecondary} />
-          <ThemedText style={[styles.detailText, { color: theme.textSecondary }]}>
-            {booking.village}, {booking.district}
-          </ThemedText>
-        </View>
-        <View style={styles.detailRow}>
-          <Feather name="maximize-2" size={14} color={theme.textSecondary} />
-          <ThemedText style={[styles.detailText, { color: theme.textSecondary }]}>
-            {booking.acreage} {t('acres')} - {booking.cropType}
-          </ThemedText>
-        </View>
-      </View>
-    </Card>
-  );
+  const getDistanceToBooking = (booking: Booking, index: number): { distance: number; isFromHome: boolean } => {
+    if (index === 0 && operator) {
+      const dist = calculateDistance(
+        operator.homeLatitude,
+        operator.homeLongitude,
+        booking.latitude,
+        booking.longitude
+      );
+      return { distance: dist, isFromHome: true };
+    } else if (index > 0) {
+      const prevBooking = sortedBookings[index - 1];
+      const dist = calculateDistance(
+        prevBooking.latitude,
+        prevBooking.longitude,
+        booking.latitude,
+        booking.longitude
+      );
+      return { distance: dist, isFromHome: false };
+    }
+    return { distance: 0, isFromHome: false };
+  };
 
-  const renderRouteItem = ({ item, index }: { item: Booking; index: number }) => (
-    <Card style={styles.routeCard}>
-      <View style={styles.routeNumber}>
-        <ThemedText style={styles.routeNumberText}>{index + 1}</ThemedText>
-      </View>
-      <View style={styles.routeContent}>
-        <ThemedText style={styles.routeFarmer}>{item.farmerName}</ThemedText>
-        <ThemedText style={[styles.routeLocation, { color: theme.textSecondary }]}>
-          {item.village}, {item.district}
-        </ThemedText>
-        <View style={styles.routeMeta}>
-          <ThemedText style={[styles.routeTime, { color: BrandColors.primary }]}>
-            {item.scheduledTime}
-          </ThemedText>
-          <ThemedText style={[styles.routeAcres, { color: theme.textSecondary }]}>
-            {item.acreage} {t('acres')}
-          </ThemedText>
+  const handleBookingPress = (bookingId: string) => {
+    navigation.navigate('BookingDetail', { bookingId });
+  };
+
+  const renderRouteItem = (item: Booking, index: number) => {
+    const { distance, isFromHome } = getDistanceToBooking(item, index);
+    
+    return (
+      <View key={item.id}>
+        <View style={styles.distanceIndicator}>
+          <View style={styles.distanceLine} />
+          <View style={styles.distanceBadge}>
+            <Feather name="navigation" size={12} color={BrandColors.primary} />
+            <ThemedText style={styles.distanceText}>
+              {isFromHome ? `${t('fromHome')} - ` : ''}{distance.toFixed(1)} {t('kmAway')}
+            </ThemedText>
+          </View>
+          <View style={styles.distanceLine} />
         </View>
+        
+        <Pressable onPress={() => handleBookingPress(item.id)}>
+          <Card style={styles.routeCard}>
+            <View style={styles.routeNumber}>
+              <ThemedText style={styles.routeNumberText}>{index + 1}</ThemedText>
+            </View>
+            <View style={styles.routeContent}>
+              <ThemedText style={styles.routeFarmer}>{item.farmerName}</ThemedText>
+              <ThemedText style={[styles.routeLocation, { color: theme.textSecondary }]}>
+                {item.village}, {item.district}
+              </ThemedText>
+              <View style={styles.routeMeta}>
+                <ThemedText style={[styles.routeTime, { color: BrandColors.primary }]}>
+                  {item.scheduledTime}
+                </ThemedText>
+                <ThemedText style={[styles.routeAcres, { color: theme.textSecondary }]}>
+                  {item.acreage} {t('acres')}
+                </ThemedText>
+              </View>
+            </View>
+            <View style={[styles.routeStatus, { backgroundColor: getStatusColor(item.status) }]}>
+              <Feather
+                name={item.status === 'active' || item.status === 'in_progress' ? 'check' : 'clock'}
+                size={14}
+                color={BrandColors.white}
+              />
+            </View>
+            <Feather name="chevron-right" size={20} color={theme.textSecondary} style={styles.chevron} />
+          </Card>
+        </Pressable>
       </View>
-      <View style={[styles.routeStatus, { backgroundColor: getStatusColor(item.status) }]}>
-        <Feather
-          name={item.status === 'active' || item.status === 'in_progress' ? 'check' : 'clock'}
-          size={14}
-          color={BrandColors.white}
-        />
-      </View>
-    </Card>
-  );
+    );
+  };
 
   return (
     <GradientBackground>
@@ -261,28 +283,13 @@ export default function CalendarScreen() {
         </Card>
 
         <View style={styles.sectionHeader}>
-          <ThemedText style={styles.sectionTitle}>{t('bookingsFor')}</ThemedText>
+          <ThemedText style={styles.sectionTitle}>{t('bookingsAndRoute')}</ThemedText>
           <ThemedText style={[styles.selectedDateText, { color: BrandColors.primary }]}>
             {new Date(selectedDate).toLocaleDateString('en-IN', {
               day: 'numeric',
               month: 'short',
             })}
           </ThemedText>
-        </View>
-
-        {selectedBookings.length > 0 ? (
-          selectedBookings.map(renderBookingItem)
-        ) : (
-          <Card style={styles.emptyCard}>
-            <Feather name="calendar" size={32} color={theme.textSecondary} />
-            <ThemedText style={[styles.emptyText, { color: theme.textSecondary }]}>
-              {t('noBookingsForDate')}
-            </ThemedText>
-          </Card>
-        )}
-
-        <View style={styles.sectionHeader}>
-          <ThemedText style={styles.sectionTitle}>{t('routePlanner')}</ThemedText>
         </View>
 
         <View style={styles.filterRow}>
@@ -320,10 +327,8 @@ export default function CalendarScreen() {
           </Pressable>
         </View>
 
-        {todayBookings.length > 0 ? (
-          todayBookings.map((item, index) => (
-            <View key={item.id}>{renderRouteItem({ item, index })}</View>
-          ))
+        {sortedBookings.length > 0 ? (
+          sortedBookings.map((item, index) => renderRouteItem(item, index))
         ) : (
           <Card style={styles.emptyCard}>
             <Feather name="map" size={32} color={theme.textSecondary} />
@@ -424,46 +429,6 @@ const styles = StyleSheet.create({
     ...Typography.body,
     fontWeight: '600',
   },
-  bookingCard: {
-    marginBottom: Spacing.md,
-  },
-  bookingHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: Spacing.sm,
-  },
-  bookingInfo: {
-    flex: 1,
-  },
-  farmerName: {
-    ...Typography.bodyBold,
-    color: BrandColors.white,
-  },
-  bookingTime: {
-    ...Typography.small,
-    marginTop: 2,
-  },
-  statusBadge: {
-    paddingHorizontal: Spacing.sm,
-    paddingVertical: Spacing.xs,
-    borderRadius: BorderRadius.full,
-  },
-  statusText: {
-    ...Typography.caption,
-    fontWeight: '600',
-  },
-  bookingDetails: {
-    gap: Spacing.xs,
-  },
-  detailRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.xs,
-  },
-  detailText: {
-    ...Typography.small,
-  },
   filterRow: {
     flexDirection: 'row',
     gap: Spacing.sm,
@@ -490,10 +455,33 @@ const styles = StyleSheet.create({
     color: BrandColors.white,
     fontWeight: '600',
   },
+  distanceIndicator: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: Spacing.sm,
+  },
+  distanceLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+  },
+  distanceBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.xs,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.xs,
+    backgroundColor: 'rgba(0,200,150,0.15)',
+    borderRadius: BorderRadius.full,
+  },
+  distanceText: {
+    ...Typography.caption,
+    color: BrandColors.primary,
+    fontWeight: '600',
+  },
   routeCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: Spacing.md,
     paddingVertical: Spacing.md,
   },
   routeNumber: {
@@ -539,6 +527,9 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  chevron: {
+    marginLeft: Spacing.sm,
   },
   emptyCard: {
     alignItems: 'center',
