@@ -6,7 +6,6 @@ import { useApp } from '@/context/AppContext';
 import DashboardScreen from '@/screens/DashboardScreen';
 import BookingsListScreen from '@/screens/BookingsListScreen';
 import BookingDetailScreen from '@/screens/BookingDetailScreen';
-import { AtomikHeaderTitle } from '@/components/HeaderTitle';
 
 export type HomeStackParamList = {
   Home: undefined;
@@ -26,7 +25,7 @@ export default function HomeStackNavigator() {
         name="Home"
         component={DashboardScreen}
         options={{
-          headerTitle: () => <AtomikHeaderTitle />,
+          headerShown: false,
         }}
       />
       <Stack.Screen

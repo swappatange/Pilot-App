@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, ScrollView, Pressable } from 'react-native';
-import { useHeaderHeight } from '@react-navigation/elements';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { Feather } from '@expo/vector-icons';
 import { ThemedText } from '@/components/ThemedText';
@@ -18,7 +18,7 @@ interface Props {
 }
 
 export default function DashboardScreen({ navigation }: Props) {
-  const headerHeight = useHeaderHeight();
+  const insets = useSafeAreaInsets();
   const tabBarHeight = useBottomTabBarHeight();
   const { theme } = useTheme();
   const { t, operator, getBookingsByStatus, getTodayBookings, getEarnings } = useApp();
@@ -43,7 +43,7 @@ export default function DashboardScreen({ navigation }: Props) {
         contentContainerStyle={[
           styles.scrollContent,
           {
-            paddingTop: headerHeight + Spacing.lg,
+            paddingTop: insets.top + Spacing.xl,
             paddingBottom: tabBarHeight + Spacing.xl,
           },
         ]}
