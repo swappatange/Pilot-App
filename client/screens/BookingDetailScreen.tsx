@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, ScrollView, Pressable, Alert, Linking } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { Feather } from '@expo/vector-icons';
 import { ThemedText } from '@/components/ThemedText';
 import { GradientBackground } from '@/components/GradientBackground';
@@ -21,6 +22,7 @@ interface Props {
 
 export default function BookingDetailScreen({ navigation, route }: Props) {
   const insets = useSafeAreaInsets();
+  const tabBarHeight = useBottomTabBarHeight();
   const { theme } = useTheme();
   const { t, bookings, updateBookingStatus } = useApp();
 
@@ -107,7 +109,7 @@ export default function BookingDetailScreen({ navigation, route }: Props) {
       <ScrollView
         contentContainerStyle={[
           styles.scrollContent,
-          { paddingBottom: insets.bottom + (booking.status !== 'completed' ? 120 : Spacing.xl) },
+          { paddingBottom: tabBarHeight + (booking.status !== 'completed' && booking.status !== 'cancelled' ? 100 : Spacing.xl) },
         ]}
         showsVerticalScrollIndicator={false}
       >
@@ -204,8 +206,8 @@ export default function BookingDetailScreen({ navigation, route }: Props) {
           style={[
             styles.footer,
             {
-              paddingBottom: insets.bottom + Spacing.lg,
-              backgroundColor: theme.backgroundRoot,
+              bottom: tabBarHeight,
+              backgroundColor: 'rgba(0, 30, 25, 0.95)',
             },
           ]}
         >
@@ -380,13 +382,12 @@ const styles = StyleSheet.create({
   },
   footer: {
     position: 'absolute',
-    bottom: 0,
     left: 0,
     right: 0,
     paddingHorizontal: Spacing.lg,
-    paddingTop: Spacing.lg,
+    paddingVertical: Spacing.md,
     borderTopWidth: 1,
-    borderTopColor: 'rgba(0,0,0,0.05)',
+    borderTopColor: 'rgba(255,255,255,0.1)',
   },
   actionButtons: {
     flexDirection: 'row',
