@@ -78,8 +78,8 @@ export default function EarningsScreen() {
 
         <View style={styles.statsRow}>
           <Card style={styles.statCard}>
-            <View style={[styles.statIcon, { backgroundColor: BrandColors.primary + '15' }]}>
-              <Feather name="check-circle" size={20} color={BrandColors.primary} />
+            <View style={[styles.statIcon, { backgroundColor: 'rgba(255,255,255,0.15)' }]}>
+              <Feather name="check-circle" size={20} color={BrandColors.white} />
             </View>
             <ThemedText style={styles.statValue}>{earnings.count}</ThemedText>
             <ThemedText style={[styles.statLabel, { color: theme.textSecondary }]}>
@@ -88,8 +88,8 @@ export default function EarningsScreen() {
           </Card>
 
           <Card style={styles.statCard}>
-            <View style={[styles.statIcon, { backgroundColor: BrandColors.accent + '15' }]}>
-              <Feather name="map" size={20} color={BrandColors.accent} />
+            <View style={[styles.statIcon, { backgroundColor: 'rgba(255,255,255,0.15)' }]}>
+              <Feather name="map" size={20} color={BrandColors.white} />
             </View>
             <ThemedText style={styles.statValue}>{earnings.acres}</ThemedText>
             <ThemedText style={[styles.statLabel, { color: theme.textSecondary }]}>
@@ -108,8 +108,8 @@ export default function EarningsScreen() {
                 {'\u20B9'}{earnings.count > 0 ? Math.round(earnings.total / earnings.count).toLocaleString('en-IN') : 0}
               </ThemedText>
             </View>
-            <View style={[styles.avgIcon, { backgroundColor: BrandColors.primaryDark + '15' }]}>
-              <Feather name="trending-up" size={24} color={BrandColors.primaryDark} />
+            <View style={[styles.avgIcon, { backgroundColor: 'rgba(255,255,255,0.15)' }]}>
+              <Feather name="trending-up" size={24} color={BrandColors.white} />
             </View>
           </View>
         </Card>
@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
   },
   totalValue: {
     ...Typography.h1,
-    color: BrandColors.primary,
+    color: BrandColors.white,
     marginVertical: Spacing.md,
   },
   periodSelector: {

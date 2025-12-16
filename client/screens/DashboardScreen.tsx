@@ -61,8 +61,8 @@ export default function DashboardScreen({ navigation }: Props) {
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.statsContainer}
         >
-          <Card style={[styles.statCard, { backgroundColor: BrandColors.primary + '15' }]}>
-            <View style={[styles.statIcon, { backgroundColor: BrandColors.primary }]}>
+          <Card style={[styles.statCard, { backgroundColor: 'rgba(255,255,255,0.1)' }]}>
+            <View style={[styles.statIcon, { backgroundColor: 'rgba(255,255,255,0.2)' }]}>
               <Feather name="calendar" size={20} color={BrandColors.white} />
             </View>
             <ThemedText style={styles.statValue}>{pendingCount + activeCount}</ThemedText>
@@ -71,8 +71,8 @@ export default function DashboardScreen({ navigation }: Props) {
             </ThemedText>
           </Card>
 
-          <Card style={[styles.statCard, { backgroundColor: BrandColors.accent + '15' }]}>
-            <View style={[styles.statIcon, { backgroundColor: BrandColors.accent }]}>
+          <Card style={[styles.statCard, { backgroundColor: 'rgba(255,255,255,0.1)' }]}>
+            <View style={[styles.statIcon, { backgroundColor: 'rgba(255,255,255,0.2)' }]}>
               <Feather name="droplet" size={20} color={BrandColors.white} />
             </View>
             <ThemedText style={styles.statValue}>{todayEarnings.count}</ThemedText>
@@ -81,8 +81,8 @@ export default function DashboardScreen({ navigation }: Props) {
             </ThemedText>
           </Card>
 
-          <Card style={[styles.statCard, { backgroundColor: BrandColors.primaryDark + '15' }]}>
-            <View style={[styles.statIcon, { backgroundColor: BrandColors.primaryDark }]}>
+          <Card style={[styles.statCard, { backgroundColor: 'rgba(255,255,255,0.1)' }]}>
+            <View style={[styles.statIcon, { backgroundColor: 'rgba(255,255,255,0.2)' }]}>
               <Feather name="map" size={20} color={BrandColors.white} />
             </View>
             <ThemedText style={styles.statValue}>{todayEarnings.acres}</ThemedText>
@@ -95,7 +95,7 @@ export default function DashboardScreen({ navigation }: Props) {
         <View style={styles.sectionHeader}>
           <ThemedText style={styles.sectionTitle}>{t('activeBookings')}</ThemedText>
           <Pressable onPress={() => navigation.navigate('BookingsList')}>
-            <ThemedText style={[styles.viewAll, { color: BrandColors.primary }]}>
+            <ThemedText style={[styles.viewAll, { color: BrandColors.white }]}>
               {t('viewAll')}
             </ThemedText>
           </Pressable>
@@ -111,7 +111,7 @@ export default function DashboardScreen({ navigation }: Props) {
           ))
         ) : (
           <Card style={styles.emptyCard}>
-            <Feather name="check-circle" size={48} color={BrandColors.primary} />
+            <Feather name="check-circle" size={48} color={BrandColors.white} />
             <ThemedText style={[styles.emptyText, { color: theme.textSecondary }]}>
               {t('noActiveBookings')}
             </ThemedText>

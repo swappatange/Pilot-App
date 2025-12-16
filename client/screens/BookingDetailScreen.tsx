@@ -118,8 +118,8 @@ export default function BookingDetailScreen({ navigation, route }: Props) {
         <Card style={styles.card}>
           <ThemedText style={styles.cardTitle}>{t('farmerDetails')}</ThemedText>
           <View style={styles.farmerRow}>
-            <View style={[styles.avatar, { backgroundColor: BrandColors.primary + '20' }]}>
-              <Feather name="user" size={24} color={BrandColors.primary} />
+            <View style={[styles.avatar, { backgroundColor: 'rgba(255,255,255,0.15)' }]}>
+              <Feather name="user" size={24} color={BrandColors.white} />
             </View>
             <View style={styles.farmerInfo}>
               <ThemedText style={styles.farmerName}>{booking.farmerName}</ThemedText>
@@ -255,7 +255,7 @@ function DetailRow({ icon, label, value }: { icon: string; label: string; value:
   return (
     <View style={detailStyles.row}>
       <View style={detailStyles.iconContainer}>
-        <Feather name={icon as any} size={18} color={BrandColors.primary} />
+        <Feather name={icon as any} size={18} color={BrandColors.white} />
       </View>
       <View style={detailStyles.content}>
         <ThemedText style={[detailStyles.label, { color: theme.textSecondary }]}>{label}</ThemedText>
@@ -277,7 +277,7 @@ const detailStyles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: BrandColors.primary + '15',
+    backgroundColor: 'rgba(255,255,255,0.15)',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: Spacing.md,
@@ -367,7 +367,7 @@ const styles = StyleSheet.create({
   pricingValue: {
     ...Typography.h3,
     marginTop: Spacing.xs,
-    color: BrandColors.primary,
+    color: BrandColors.white,
   },
   paymentBadge: {
     paddingHorizontal: Spacing.md,

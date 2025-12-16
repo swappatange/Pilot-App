@@ -37,7 +37,7 @@ export function BookingCard({ booking, onPress, showActions = false, compact = f
       <Pressable onPress={onPress} style={({ pressed }) => pressed && { opacity: 0.7 }}>
         <Card style={styles.compactCard}>
           <View style={styles.compactRow}>
-            <View style={[styles.timeContainer, { backgroundColor: BrandColors.primary + '15' }]}>
+            <View style={[styles.timeContainer, { backgroundColor: 'rgba(255,255,255,0.15)' }]}>
               <ThemedText style={styles.time}>{booking.scheduledTime}</ThemedText>
             </View>
             <View style={styles.compactInfo}>
@@ -77,13 +77,13 @@ export function BookingCard({ booking, onPress, showActions = false, compact = f
 
         <View style={styles.details}>
           <View style={styles.detailItem}>
-            <Feather name="maximize-2" size={16} color={BrandColors.primary} />
+            <Feather name="maximize-2" size={16} color={BrandColors.white} />
             <ThemedText style={styles.detailText}>
               {booking.acreage} {t('acres')}
             </ThemedText>
           </View>
           <View style={styles.detailItem}>
-            <Feather name="calendar" size={16} color={BrandColors.primary} />
+            <Feather name="calendar" size={16} color={BrandColors.white} />
             <ThemedText style={styles.detailText}>
               {new Date(booking.scheduledDate).toLocaleDateString('en-IN', {
                 day: 'numeric',
@@ -92,7 +92,7 @@ export function BookingCard({ booking, onPress, showActions = false, compact = f
             </ThemedText>
           </View>
           <View style={styles.detailItem}>
-            <Feather name="clock" size={16} color={BrandColors.primary} />
+            <Feather name="clock" size={16} color={BrandColors.white} />
             <ThemedText style={styles.detailText}>{booking.scheduledTime}</ThemedText>
           </View>
         </View>
@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
   time: {
     ...Typography.small,
     fontWeight: '600',
-    color: BrandColors.primary,
+    color: BrandColors.white,
   },
   compactInfo: {
     flex: 1,
@@ -216,7 +216,7 @@ const styles = StyleSheet.create({
   },
   amount: {
     ...Typography.h4,
-    color: BrandColors.primary,
+    color: BrandColors.white,
   },
   actions: {
     flexDirection: 'row',

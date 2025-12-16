@@ -59,7 +59,7 @@ export default function HistoryScreen() {
     return (
       <Card style={styles.historyCard}>
         <View style={styles.historyHeader}>
-          <View style={[styles.dateContainer, { backgroundColor: BrandColors.primary + '15' }]}>
+          <View style={[styles.dateContainer, { backgroundColor: 'rgba(255,255,255,0.15)' }]}>
             <ThemedText style={styles.dateDay}>{date.getDate()}</ThemedText>
             <ThemedText style={[styles.dateMonth, { color: theme.textSecondary }]}>
               {date.toLocaleDateString('en-IN', { month: 'short' })}
@@ -85,11 +85,11 @@ export default function HistoryScreen() {
         </View>
         <View style={styles.historyDetails}>
           <View style={styles.detailItem}>
-            <Feather name="layers" size={14} color={BrandColors.primary} />
+            <Feather name="layers" size={14} color={BrandColors.white} />
             <ThemedText style={styles.detailText}>{item.cropType}</ThemedText>
           </View>
           <View style={styles.detailItem}>
-            <Feather name="droplet" size={14} color={BrandColors.primary} />
+            <Feather name="droplet" size={14} color={BrandColors.white} />
             <ThemedText style={styles.detailText}>
               {item.sprayType === 'pesticide' ? t('pesticide') : t('fertilizer')}
             </ThemedText>

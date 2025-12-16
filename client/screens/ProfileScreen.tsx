@@ -98,9 +98,9 @@ export default function ProfileScreen({ onLogout }: ProfileScreenProps) {
           <ThemedText style={[styles.profilePhone, { color: theme.textSecondary }]}>
             {operator?.phone}
           </ThemedText>
-          <View style={[styles.licenseBadge, { backgroundColor: BrandColors.primary + '15' }]}>
-            <Feather name="award" size={14} color={BrandColors.primary} />
-            <ThemedText style={[styles.licenseText, { color: BrandColors.primary }]}>
+          <View style={[styles.licenseBadge, { backgroundColor: 'rgba(255,255,255,0.15)' }]}>
+            <Feather name="award" size={14} color={BrandColors.white} />
+            <ThemedText style={[styles.licenseText, { color: BrandColors.white }]}>
               {operator?.licenseNumber}
             </ThemedText>
           </View>
@@ -118,8 +118,8 @@ export default function ProfileScreen({ onLogout }: ProfileScreenProps) {
                     itemIndex < section.items.length - 1 && styles.itemBorder,
                   ]}
                 >
-                  <View style={[styles.itemIcon, { backgroundColor: BrandColors.primary + '15' }]}>
-                    <Feather name={item.icon as any} size={18} color={BrandColors.primary} />
+                  <View style={[styles.itemIcon, { backgroundColor: 'rgba(255,255,255,0.15)' }]}>
+                    <Feather name={item.icon as any} size={18} color={BrandColors.white} />
                   </View>
                   <View style={styles.itemContent}>
                     <ThemedText style={[styles.itemLabel, { color: theme.textSecondary }]}>
@@ -146,8 +146,8 @@ export default function ProfileScreen({ onLogout }: ProfileScreenProps) {
                   ]}
                   onPress={item.onPress}
                 >
-                  <View style={[styles.itemIcon, { backgroundColor: BrandColors.primary + '15' }]}>
-                    <Feather name={item.icon as any} size={18} color={BrandColors.primary} />
+                  <View style={[styles.itemIcon, { backgroundColor: 'rgba(255,255,255,0.15)' }]}>
+                    <Feather name={item.icon as any} size={18} color={BrandColors.white} />
                   </View>
                   <ThemedText style={styles.menuLabel}>{item.label}</ThemedText>
                   <ThemedText style={[styles.menuValue, { color: theme.textSecondary }]}>
@@ -163,7 +163,7 @@ export default function ProfileScreen({ onLogout }: ProfileScreenProps) {
                         style={[
                           styles.languageItem,
                           language === lang.code && {
-                            backgroundColor: BrandColors.primary + '15',
+                            backgroundColor: 'rgba(255,255,255,0.2)',
                           },
                         ]}
                         onPress={() => {
@@ -173,7 +173,7 @@ export default function ProfileScreen({ onLogout }: ProfileScreenProps) {
                       >
                         <ThemedText style={styles.languageName}>{lang.nativeName}</ThemedText>
                         {language === lang.code && (
-                          <Feather name="check" size={18} color={BrandColors.primary} />
+                          <Feather name="check" size={18} color={BrandColors.white} />
                         )}
                       </Pressable>
                     ))}
