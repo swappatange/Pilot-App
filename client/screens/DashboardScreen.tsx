@@ -1,8 +1,9 @@
-import React from 'react';
-import { View, StyleSheet, ScrollView, Pressable } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, StyleSheet, ScrollView, Pressable, Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { Feather } from '@expo/vector-icons';
+import * as Location from 'expo-location';
 import { ThemedText } from '@/components/ThemedText';
 import { GradientBackground } from '@/components/GradientBackground';
 import { Card } from '@/components/Card';
@@ -17,11 +18,41 @@ interface Props {
   navigation: NativeStackNavigationProp<HomeStackParamList, 'Home'>;
 }
 
+interface WeatherData {
+  temperature: number;
+  humidity: number;
+  windSpeed: number;
+  weatherCode: number;
+  location: string;
+}
+
+const getWeatherIcon = (code: number): string => {
+  if (code === 0) return 'sun';
+  if (code <= 3) return 'cloud';
+  if (code <= 49) return 'cloud';
+  if (code <= 69) return 'cloud-rain';
+  if (code <= 79) return 'cloud-snow';
+  if (code <= 99) return 'cloud-lightning';
+  return 'cloud';
+};
+
+const getWeatherDescription = (code: number): string => {
+  if (code === 0) return 'Clear';
+  if (code <= 3) return 'Cloudy';
+  if (code <= 49) return 'Foggy';
+  if (code <= 69) return 'Rainy';
+  if (code <= 79) return 'Snowy';
+  if (code <= 99) return 'Stormy';
+  return 'Unknown';
+};
+
 export default function DashboardScreen({ navigation }: Props) {
   const insets = useSafeAreaInsets();
   const tabBarHeight = useBottomTabBarHeight();
   const { theme } = useTheme();
   const { t, operator, getBookingsByStatus, getTodayBookings, getEarnings } = useApp();
+  const [weather, setWeather] = useState<WeatherData | null>(null);
+  const [locationError, setLocationError] = useState<string | null>(null);
 
   const activeBookings = getBookingsByStatus(['pending', 'active', 'in_progress']);
   const todayBookings = getTodayBookings();
@@ -37,18 +68,107 @@ export default function DashboardScreen({ navigation }: Props) {
   const pendingCount = getBookingsByStatus('pending').length;
   const activeCount = getBookingsByStatus(['active', 'in_progress']).length;
 
+  useEffect(() => {
+    const fetchWeather = async () => {
+      try {
+        if (Platform.OS === 'web') {
+          const mockWeather: WeatherData = {
+            temperature: 28,
+            humidity: 65,
+            windSpeed: 12,
+            weatherCode: 1,
+            location: 'Current Location',
+          };
+          setWeather(mockWeather);
+          return;
+        }
+
+        const { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== 'granted') {
+          setLocationError('Location permission denied');
+          return;
+        }
+
+        const location = await Location.getCurrentPositionAsync({
+          accuracy: Location.Accuracy.Balanced,
+        });
+
+        const { latitude, longitude } = location.coords;
+
+        const response = await fetch(
+          `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code&timezone=auto`
+        );
+        const data = await response.json();
+
+        if (data.current) {
+          setWeather({
+            temperature: Math.round(data.current.temperature_2m),
+            humidity: data.current.relative_humidity_2m,
+            windSpeed: Math.round(data.current.wind_speed_10m),
+            weatherCode: data.current.weather_code,
+            location: 'Current Location',
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching weather:', error);
+        setLocationError('Unable to fetch weather');
+      }
+    };
+
+    fetchWeather();
+  }, []);
+
   return (
     <GradientBackground>
       <ScrollView
         contentContainerStyle={[
           styles.scrollContent,
           {
-            paddingTop: insets.top + Spacing.xl,
+            paddingTop: insets.top + Spacing.lg,
             paddingBottom: tabBarHeight + Spacing.xl,
           },
         ]}
         showsVerticalScrollIndicator={false}
       >
+        {weather ? (
+          <Card style={styles.weatherCard}>
+            <View style={styles.weatherMain}>
+              <View style={styles.weatherLeft}>
+                <Feather
+                  name={getWeatherIcon(weather.weatherCode) as any}
+                  size={40}
+                  color={BrandColors.white}
+                />
+                <View style={styles.weatherTemp}>
+                  <ThemedText style={styles.temperature}>{weather.temperature}°C</ThemedText>
+                  <ThemedText style={[styles.weatherDesc, { color: theme.textSecondary }]}>
+                    {getWeatherDescription(weather.weatherCode)}
+                  </ThemedText>
+                </View>
+              </View>
+              <View style={styles.weatherDetails}>
+                <View style={styles.weatherDetail}>
+                  <Feather name="droplet" size={14} color={BrandColors.white} />
+                  <ThemedText style={styles.weatherDetailText}>{weather.humidity}%</ThemedText>
+                </View>
+                <View style={styles.weatherDetail}>
+                  <Feather name="wind" size={14} color={BrandColors.white} />
+                  <ThemedText style={styles.weatherDetailText}>{weather.windSpeed} km/h</ThemedText>
+                </View>
+              </View>
+            </View>
+          </Card>
+        ) : locationError ? (
+          <Card style={styles.weatherCard}>
+            <View style={styles.weatherError}>
+              <Feather name="cloud-off" size={24} color={theme.textSecondary} />
+              <ThemedText style={[styles.weatherErrorText, { color: theme.textSecondary }]}>
+                {locationError}
+              </ThemedText>
+            </View>
+          </Card>
+        ) : null}
+
         <Card style={styles.greetingCard}>
           <ThemedText style={[styles.greeting, { color: theme.textSecondary }]}>
             {getGreeting()},
@@ -56,14 +176,10 @@ export default function DashboardScreen({ navigation }: Props) {
           <ThemedText style={styles.operatorName}>{operator?.name || 'Operator'}</ThemedText>
         </Card>
 
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.statsContainer}
-        >
-          <Card style={[styles.statCard, { backgroundColor: 'rgba(255,255,255,0.1)' }]}>
+        <View style={styles.statsRow}>
+          <Card style={styles.statCard}>
             <View style={[styles.statIcon, { backgroundColor: 'rgba(255,255,255,0.2)' }]}>
-              <Feather name="calendar" size={20} color={BrandColors.white} />
+              <Feather name="calendar" size={18} color={BrandColors.white} />
             </View>
             <ThemedText style={styles.statValue}>{pendingCount + activeCount}</ThemedText>
             <ThemedText style={[styles.statLabel, { color: theme.textSecondary }]}>
@@ -71,9 +187,9 @@ export default function DashboardScreen({ navigation }: Props) {
             </ThemedText>
           </Card>
 
-          <Card style={[styles.statCard, { backgroundColor: 'rgba(255,255,255,0.1)' }]}>
+          <Card style={styles.statCard}>
             <View style={[styles.statIcon, { backgroundColor: 'rgba(255,255,255,0.2)' }]}>
-              <Feather name="droplet" size={20} color={BrandColors.white} />
+              <Feather name="droplet" size={18} color={BrandColors.white} />
             </View>
             <ThemedText style={styles.statValue}>{todayEarnings.count}</ThemedText>
             <ThemedText style={[styles.statLabel, { color: theme.textSecondary }]}>
@@ -81,16 +197,16 @@ export default function DashboardScreen({ navigation }: Props) {
             </ThemedText>
           </Card>
 
-          <Card style={[styles.statCard, { backgroundColor: 'rgba(255,255,255,0.1)' }]}>
+          <Card style={styles.statCard}>
             <View style={[styles.statIcon, { backgroundColor: 'rgba(255,255,255,0.2)' }]}>
-              <Feather name="map" size={20} color={BrandColors.white} />
+              <Feather name="map" size={18} color={BrandColors.white} />
             </View>
             <ThemedText style={styles.statValue}>{todayEarnings.acres}</ThemedText>
             <ThemedText style={[styles.statLabel, { color: theme.textSecondary }]}>
               {t('acresCovered')}
             </ThemedText>
           </Card>
-        </ScrollView>
+        </View>
 
         <View style={styles.sectionHeader}>
           <ThemedText style={styles.sectionTitle}>{t('activeBookings')}</ThemedText>
@@ -154,8 +270,53 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingHorizontal: Spacing.lg,
   },
+  weatherCard: {
+    marginBottom: Spacing.md,
+    paddingVertical: Spacing.md,
+  },
+  weatherMain: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  weatherLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.md,
+  },
+  weatherTemp: {
+    gap: 2,
+  },
+  temperature: {
+    ...Typography.h2,
+    color: BrandColors.white,
+  },
+  weatherDesc: {
+    ...Typography.small,
+  },
+  weatherDetails: {
+    gap: Spacing.sm,
+  },
+  weatherDetail: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.xs,
+  },
+  weatherDetailText: {
+    ...Typography.small,
+    color: BrandColors.white,
+  },
+  weatherError: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: Spacing.sm,
+  },
+  weatherErrorText: {
+    ...Typography.small,
+  },
   greetingCard: {
-    marginBottom: Spacing.lg,
+    marginBottom: Spacing.md,
   },
   greeting: {
     ...Typography.body,
@@ -164,31 +325,33 @@ const styles = StyleSheet.create({
     ...Typography.h3,
     marginTop: Spacing.xs,
   },
-  statsContainer: {
-    paddingRight: Spacing.lg,
+  statsRow: {
+    flexDirection: 'row',
+    gap: Spacing.sm,
     marginBottom: Spacing.xl,
-    gap: Spacing.md,
   },
   statCard: {
-    width: 140,
+    flex: 1,
     alignItems: 'center',
-    paddingVertical: Spacing.xl,
+    paddingVertical: Spacing.md,
+    paddingHorizontal: Spacing.xs,
   },
   statIcon: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: Spacing.md,
+    marginBottom: Spacing.sm,
   },
   statValue: {
-    ...Typography.stats,
-    marginBottom: Spacing.xs,
+    ...Typography.h3,
+    marginBottom: 2,
   },
   statLabel: {
     ...Typography.caption,
     textAlign: 'center',
+    fontSize: 11,
   },
   sectionHeader: {
     flexDirection: 'row',
