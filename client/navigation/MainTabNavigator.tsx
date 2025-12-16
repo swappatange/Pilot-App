@@ -1,42 +1,66 @@
-import React from "react";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Feather } from "@expo/vector-icons";
-import { BlurView } from "expo-blur";
-import { Platform, StyleSheet } from "react-native";
-import HomeStackNavigator from "@/navigation/HomeStackNavigator";
-import ProfileStackNavigator from "@/navigation/ProfileStackNavigator";
-import { useTheme } from "@/hooks/useTheme";
+import React from 'react';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Feather } from '@expo/vector-icons';
+import { BlurView } from 'expo-blur';
+import { Platform, StyleSheet } from 'react-native';
+import HomeStackNavigator from '@/navigation/HomeStackNavigator';
+import EarningsScreen from '@/screens/EarningsScreen';
+import HistoryScreen from '@/screens/HistoryScreen';
+import ProfileScreen from '@/screens/ProfileScreen';
+import { useTheme } from '@/hooks/useTheme';
+import { useApp } from '@/context/AppContext';
+import { BrandColors } from '@/constants/theme';
 
 export type MainTabParamList = {
   HomeTab: undefined;
+  EarningsTab: undefined;
+  HistoryTab: undefined;
   ProfileTab: undefined;
 };
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
-export default function MainTabNavigator() {
+interface MainTabNavigatorProps {
+  onLogout: () => void;
+}
+
+export default function MainTabNavigator({ onLogout }: MainTabNavigatorProps) {
   const { theme, isDark } = useTheme();
+  const { t } = useApp();
+
+  const headerConfig = Platform.select({
+    ios: {
+      headerTransparent: true,
+      headerBlurEffect: isDark ? 'dark' : 'light',
+    } as const,
+    android: {
+      headerStyle: {
+        backgroundColor: theme.backgroundRoot,
+      },
+    },
+    default: {},
+  });
 
   return (
     <Tab.Navigator
       initialRouteName="HomeTab"
       screenOptions={{
-        tabBarActiveTintColor: theme.tabIconSelected,
+        tabBarActiveTintColor: BrandColors.primary,
         tabBarInactiveTintColor: theme.tabIconDefault,
         tabBarStyle: {
-          position: "absolute",
+          position: 'absolute',
           backgroundColor: Platform.select({
-            ios: "transparent",
+            ios: 'transparent',
             android: theme.backgroundRoot,
           }),
           borderTopWidth: 0,
           elevation: 0,
         },
         tabBarBackground: () =>
-          Platform.OS === "ios" ? (
+          Platform.OS === 'ios' ? (
             <BlurView
               intensity={100}
-              tint={isDark ? "dark" : "light"}
+              tint={isDark ? 'dark' : 'light'}
               style={StyleSheet.absoluteFill}
             />
           ) : null,
@@ -47,22 +71,52 @@ export default function MainTabNavigator() {
         name="HomeTab"
         component={HomeStackNavigator}
         options={{
-          title: "Home",
+          title: t('dashboard'),
           tabBarIcon: ({ color, size }) => (
             <Feather name="home" size={size} color={color} />
           ),
         }}
       />
       <Tab.Screen
-        name="ProfileTab"
-        component={ProfileStackNavigator}
+        name="EarningsTab"
+        component={EarningsScreen}
         options={{
-          title: "Profile",
+          headerShown: true,
+          headerTitle: t('earnings'),
+          ...headerConfig,
+          title: t('earnings'),
+          tabBarIcon: ({ color, size }) => (
+            <Feather name="dollar-sign" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="HistoryTab"
+        component={HistoryScreen}
+        options={{
+          headerShown: true,
+          headerTitle: t('history'),
+          ...headerConfig,
+          title: t('history'),
+          tabBarIcon: ({ color, size }) => (
+            <Feather name="clock" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="ProfileTab"
+        options={{
+          headerShown: true,
+          headerTitle: t('profile'),
+          ...headerConfig,
+          title: t('profile'),
           tabBarIcon: ({ color, size }) => (
             <Feather name="user" size={size} color={color} />
           ),
         }}
-      />
+      >
+        {() => <ProfileScreen onLogout={onLogout} />}
+      </Tab.Screen>
     </Tab.Navigator>
   );
 }

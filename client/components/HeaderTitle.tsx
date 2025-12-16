@@ -1,8 +1,7 @@
-import React from "react";
-import { View, StyleSheet, Image } from "react-native";
-
-import { ThemedText } from "@/components/ThemedText";
-import { Spacing } from "@/constants/theme";
+import React from 'react';
+import { View, StyleSheet, Image } from 'react-native';
+import { ThemedText } from '@/components/ThemedText';
+import { BrandColors, Spacing, Typography } from '@/constants/theme';
 
 interface HeaderTitleProps {
   title: string;
@@ -12,7 +11,7 @@ export function HeaderTitle({ title }: HeaderTitleProps) {
   return (
     <View style={styles.container}>
       <Image
-        source={require("../../assets/images/icon.png")}
+        source={require('../../assets/images/icon.png')}
         style={styles.icon}
         resizeMode="contain"
       />
@@ -21,19 +20,34 @@ export function HeaderTitle({ title }: HeaderTitleProps) {
   );
 }
 
+export function AtomikHeaderTitle() {
+  return (
+    <View style={styles.container}>
+      <Image
+        source={require('../../assets/images/atomik-logo.png')}
+        style={styles.atomikLogo}
+        resizeMode="contain"
+      />
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "flex-start",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
   },
   icon: {
     width: 28,
     height: 28,
     marginRight: Spacing.sm,
   },
+  atomikLogo: {
+    width: 100,
+    height: 32,
+  },
   title: {
-    fontSize: 17,
-    fontWeight: "600",
+    ...Typography.bodyBold,
   },
 });

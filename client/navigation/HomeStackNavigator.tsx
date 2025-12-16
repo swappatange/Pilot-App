@@ -1,25 +1,46 @@
-import React from "react";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import HomeScreen from "@/screens/HomeScreen";
-import { HeaderTitle } from "@/components/HeaderTitle";
-import { useScreenOptions } from "@/hooks/useScreenOptions";
+import React from 'react';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { useScreenOptions } from '@/hooks/useScreenOptions';
+import { useApp } from '@/context/AppContext';
+
+import DashboardScreen from '@/screens/DashboardScreen';
+import BookingsListScreen from '@/screens/BookingsListScreen';
+import BookingDetailScreen from '@/screens/BookingDetailScreen';
+import { AtomikHeaderTitle } from '@/components/HeaderTitle';
 
 export type HomeStackParamList = {
   Home: undefined;
+  BookingsList: undefined;
+  BookingDetail: { bookingId: string };
 };
 
 const Stack = createNativeStackNavigator<HomeStackParamList>();
 
 export default function HomeStackNavigator() {
   const screenOptions = useScreenOptions();
+  const { t } = useApp();
 
   return (
     <Stack.Navigator screenOptions={screenOptions}>
       <Stack.Screen
         name="Home"
-        component={HomeScreen}
+        component={DashboardScreen}
         options={{
-          headerTitle: () => <HeaderTitle title="My App" />,
+          headerTitle: () => <AtomikHeaderTitle />,
+        }}
+      />
+      <Stack.Screen
+        name="BookingsList"
+        component={BookingsListScreen}
+        options={{
+          headerTitle: t('bookings'),
+        }}
+      />
+      <Stack.Screen
+        name="BookingDetail"
+        component={BookingDetailScreen}
+        options={{
+          headerTitle: t('bookingDetails'),
         }}
       />
     </Stack.Navigator>
