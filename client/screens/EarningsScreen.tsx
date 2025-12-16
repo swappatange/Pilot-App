@@ -16,11 +16,11 @@ export default function EarningsScreen() {
   const headerHeight = useHeaderHeight();
   const tabBarHeight = useBottomTabBarHeight();
   const { theme } = useTheme();
-  const { t, getEarnings, getBookingsByStatus } = useApp();
+  const { t, getEarnings, getTransactionsByPeriod } = useApp();
   const [period, setPeriod] = useState<PeriodType>('week');
 
   const earnings = getEarnings(period);
-  const completedBookings = getBookingsByStatus('completed');
+  const transactions = getTransactionsByPeriod(period);
 
   const periods: { key: PeriodType; label: string }[] = [
     { key: 'today', label: t('today') },
@@ -115,11 +115,11 @@ export default function EarningsScreen() {
         </Card>
 
         <View style={styles.sectionHeader}>
-          <ThemedText style={styles.sectionTitle}>{t('recentTransactions')}</ThemedText>
+          <ThemedText style={styles.sectionTitle}>{t('transactions')}</ThemedText>
         </View>
 
-        {completedBookings.length > 0 ? (
-          completedBookings.slice(0, 10).map((booking) => (
+        {transactions.length > 0 ? (
+          transactions.map((booking) => (
             <Card key={booking.id} style={styles.transactionCard}>
               <View style={styles.transactionRow}>
                 <View style={[styles.transactionIcon, { backgroundColor: BrandColors.successLight }]}>

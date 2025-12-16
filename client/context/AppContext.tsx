@@ -54,6 +54,7 @@ interface AppContextType extends AppState {
   getBookingsByStatus: (status: BookingStatus | BookingStatus[]) => Booking[];
   getTodayBookings: () => Booking[];
   getEarnings: (period: 'today' | 'week' | 'month') => { total: number; count: number; acres: number };
+  getTransactionsByPeriod: (period: 'today' | 'week' | 'month') => Booking[];
 }
 
 const mockOperator: Operator = {
@@ -277,6 +278,33 @@ export function AppProvider({ children }: { children: ReactNode }) {
     };
   }, [state.bookings]);
 
+  const getTransactionsByPeriod = useCallback((period: 'today' | 'week' | 'month') => {
+    const now = new Date();
+    let startDate: Date;
+
+    switch (period) {
+      case 'today':
+        startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        break;
+      case 'week':
+        startDate = new Date(now.getTime() - 7 * 86400000);
+        break;
+      case 'month':
+        startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+        break;
+    }
+
+    return state.bookings.filter(b => {
+      if (b.status !== 'completed' || !b.completedAt) return false;
+      const completedDate = new Date(b.completedAt);
+      return completedDate >= startDate;
+    }).sort((a, b) => {
+      const dateA = new Date(a.completedAt || a.scheduledDate);
+      const dateB = new Date(b.completedAt || b.scheduledDate);
+      return dateB.getTime() - dateA.getTime();
+    });
+  }, [state.bookings]);
+
   return (
     <AppContext.Provider
       value={{
@@ -290,6 +318,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         getBookingsByStatus,
         getTodayBookings,
         getEarnings,
+        getTransactionsByPeriod,
       }}
     >
       {children}
