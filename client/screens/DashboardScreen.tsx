@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, ScrollView, Pressable, Platform } from 'react-native';
+import { View, StyleSheet, ScrollView, Pressable, Platform, Modal } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { Feather } from '@expo/vector-icons';
@@ -10,6 +10,7 @@ import { Card } from '@/components/Card';
 import { BookingCard } from '@/components/BookingCard';
 import { useTheme } from '@/hooks/useTheme';
 import { useApp } from '@/context/AppContext';
+import { languages, Language } from '@/constants/translations';
 import { BrandColors, Spacing, BorderRadius, Typography } from '@/constants/theme';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { HomeStackParamList } from '@/navigation/HomeStackNavigator';
@@ -50,9 +51,17 @@ export default function DashboardScreen({ navigation }: Props) {
   const insets = useSafeAreaInsets();
   const tabBarHeight = useBottomTabBarHeight();
   const { theme } = useTheme();
-  const { t, operator, getBookingsByStatus, getTodayBookings, getEarnings } = useApp();
+  const { t, operator, language, setLanguage, getBookingsByStatus, getTodayBookings, getEarnings } = useApp();
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [locationError, setLocationError] = useState<string | null>(null);
+  const [showLanguageModal, setShowLanguageModal] = useState(false);
+
+  const currentLanguage = languages.find((l) => l.code === language);
+
+  const handleLanguageSelect = (lang: Language) => {
+    setLanguage(lang);
+    setShowLanguageModal(false);
+  };
 
   const activeBookings = getBookingsByStatus(['pending', 'active', 'in_progress']);
   const todayBookings = getTodayBookings();
@@ -130,44 +139,95 @@ export default function DashboardScreen({ navigation }: Props) {
         ]}
         showsVerticalScrollIndicator={false}
       >
-        {weather ? (
-          <Card style={styles.weatherCard}>
-            <View style={styles.weatherMain}>
-              <View style={styles.weatherLeft}>
-                <Feather
-                  name={getWeatherIcon(weather.weatherCode) as any}
-                  size={40}
-                  color={BrandColors.white}
-                />
-                <View style={styles.weatherTemp}>
-                  <ThemedText style={styles.temperature}>{weather.temperature}°C</ThemedText>
-                  <ThemedText style={[styles.weatherDesc, { color: theme.textSecondary }]}>
-                    {getWeatherDescription(weather.weatherCode)}
+        <View style={styles.topBar}>
+          {weather ? (
+            <Card style={styles.weatherCard}>
+              <View style={styles.weatherMain}>
+                <View style={styles.weatherLeft}>
+                  <Feather
+                    name={getWeatherIcon(weather.weatherCode) as any}
+                    size={32}
+                    color={BrandColors.white}
+                  />
+                  <View style={styles.weatherTemp}>
+                    <ThemedText style={styles.temperature}>{weather.temperature}°C</ThemedText>
+                    <ThemedText style={[styles.weatherDesc, { color: theme.textSecondary }]}>
+                      {getWeatherDescription(weather.weatherCode)}
+                    </ThemedText>
+                  </View>
+                </View>
+                <View style={styles.weatherDetails}>
+                  <View style={styles.weatherDetail}>
+                    <Feather name="droplet" size={12} color={BrandColors.white} />
+                    <ThemedText style={styles.weatherDetailText}>{weather.humidity}%</ThemedText>
+                  </View>
+                  <View style={styles.weatherDetail}>
+                    <Feather name="wind" size={12} color={BrandColors.white} />
+                    <ThemedText style={styles.weatherDetailText}>{weather.windSpeed} km/h</ThemedText>
+                  </View>
+                </View>
+              </View>
+            </Card>
+          ) : locationError ? (
+            <Card style={styles.weatherCard}>
+              <View style={styles.weatherError}>
+                <Feather name="cloud-off" size={20} color={theme.textSecondary} />
+                <ThemedText style={[styles.weatherErrorText, { color: theme.textSecondary }]}>
+                  {locationError}
+                </ThemedText>
+              </View>
+            </Card>
+          ) : (
+            <View style={styles.weatherCard} />
+          )}
+
+          <Pressable
+            style={[styles.languageSelector, { backgroundColor: theme.backgroundSecondary }]}
+            onPress={() => setShowLanguageModal(true)}
+          >
+            <Feather name="globe" size={18} color={BrandColors.primary} />
+            <ThemedText style={styles.languageText}>{currentLanguage?.nativeName || 'EN'}</ThemedText>
+            <Feather name="chevron-down" size={14} color={theme.textSecondary} />
+          </Pressable>
+        </View>
+
+        <Modal
+          visible={showLanguageModal}
+          transparent
+          animationType="fade"
+          onRequestClose={() => setShowLanguageModal(false)}
+        >
+          <Pressable
+            style={styles.modalOverlay}
+            onPress={() => setShowLanguageModal(false)}
+          >
+            <View style={[styles.languageModal, { backgroundColor: theme.backgroundSecondary }]}>
+              <ThemedText style={styles.modalTitle}>{t('selectLanguage')}</ThemedText>
+              {languages.map((lang) => (
+                <Pressable
+                  key={lang.code}
+                  style={[
+                    styles.languageOption,
+                    language === lang.code && styles.languageOptionActive,
+                  ]}
+                  onPress={() => handleLanguageSelect(lang.code)}
+                >
+                  <ThemedText
+                    style={[
+                      styles.languageOptionText,
+                      language === lang.code && styles.languageOptionTextActive,
+                    ]}
+                  >
+                    {lang.nativeName}
                   </ThemedText>
-                </View>
-              </View>
-              <View style={styles.weatherDetails}>
-                <View style={styles.weatherDetail}>
-                  <Feather name="droplet" size={14} color={BrandColors.white} />
-                  <ThemedText style={styles.weatherDetailText}>{weather.humidity}%</ThemedText>
-                </View>
-                <View style={styles.weatherDetail}>
-                  <Feather name="wind" size={14} color={BrandColors.white} />
-                  <ThemedText style={styles.weatherDetailText}>{weather.windSpeed} km/h</ThemedText>
-                </View>
-              </View>
+                  {language === lang.code ? (
+                    <Feather name="check" size={18} color={BrandColors.primary} />
+                  ) : null}
+                </Pressable>
+              ))}
             </View>
-          </Card>
-        ) : locationError ? (
-          <Card style={styles.weatherCard}>
-            <View style={styles.weatherError}>
-              <Feather name="cloud-off" size={24} color={theme.textSecondary} />
-              <ThemedText style={[styles.weatherErrorText, { color: theme.textSecondary }]}>
-                {locationError}
-              </ThemedText>
-            </View>
-          </Card>
-        ) : null}
+          </Pressable>
+        </Modal>
 
         <Card style={styles.greetingCard}>
           <ThemedText style={[styles.greeting, { color: theme.textSecondary }]}>
@@ -270,9 +330,65 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingHorizontal: Spacing.lg,
   },
-  weatherCard: {
+  topBar: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+    gap: Spacing.sm,
     marginBottom: Spacing.md,
+  },
+  weatherCard: {
+    flex: 1,
+    paddingVertical: Spacing.sm,
+    paddingHorizontal: Spacing.md,
+  },
+  languageSelector: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.xs,
+    paddingVertical: Spacing.sm,
+    paddingHorizontal: Spacing.md,
+    borderRadius: BorderRadius.lg,
+  },
+  languageText: {
+    ...Typography.small,
+    fontWeight: '600',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: Spacing.xl,
+  },
+  languageModal: {
+    width: '100%',
+    maxWidth: 300,
+    borderRadius: BorderRadius.xl,
+    padding: Spacing.lg,
+  },
+  modalTitle: {
+    ...Typography.h4,
+    textAlign: 'center',
+    marginBottom: Spacing.lg,
+  },
+  languageOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     paddingVertical: Spacing.md,
+    paddingHorizontal: Spacing.md,
+    borderRadius: BorderRadius.md,
+  },
+  languageOptionActive: {
+    backgroundColor: `${BrandColors.primary}20`,
+  },
+  languageOptionText: {
+    ...Typography.body,
+  },
+  languageOptionTextActive: {
+    color: BrandColors.primary,
+    fontWeight: '600',
   },
   weatherMain: {
     flexDirection: 'row',
