@@ -85,8 +85,7 @@ export default function ProfileScreen({ onLogout }: ProfileScreenProps) {
   ];
 
   const accountItems = [
-    { icon: 'log-out', label: t('logout'), onPress: handleLogout, danger: false },
-    { icon: 'trash-2', label: t('deleteAccount'), onPress: handleDeleteAccount, danger: true },
+    { icon: 'log-out', label: t('logout'), onPress: handleLogout, danger: true },
   ];
 
   const renderIconCircle = (iconName: string, isDanger: boolean = false) => (
