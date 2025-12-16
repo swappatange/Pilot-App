@@ -4,7 +4,7 @@ import { useHeaderHeight } from '@react-navigation/elements';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { Feather } from '@expo/vector-icons';
 import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import { GradientBackground } from '@/components/GradientBackground';
 import { Card } from '@/components/Card';
 import { BookingCard } from '@/components/BookingCard';
 import { useTheme } from '@/hooks/useTheme';
@@ -38,7 +38,7 @@ export default function DashboardScreen({ navigation }: Props) {
   const activeCount = getBookingsByStatus(['active', 'in_progress']).length;
 
   return (
-    <ThemedView style={styles.container}>
+    <GradientBackground>
       <ScrollView
         contentContainerStyle={[
           styles.scrollContent,
@@ -143,7 +143,7 @@ export default function DashboardScreen({ navigation }: Props) {
           </Card>
         )}
       </ScrollView>
-    </ThemedView>
+    </GradientBackground>
   );
 }
 

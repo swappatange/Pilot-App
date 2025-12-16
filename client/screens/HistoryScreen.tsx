@@ -4,7 +4,7 @@ import { useHeaderHeight } from '@react-navigation/elements';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { Feather } from '@expo/vector-icons';
 import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import { GradientBackground } from '@/components/GradientBackground';
 import { Card } from '@/components/Card';
 import { useTheme } from '@/hooks/useTheme';
 import { useApp, Booking } from '@/context/AppContext';
@@ -100,7 +100,7 @@ export default function HistoryScreen() {
   };
 
   return (
-    <ThemedView style={styles.container}>
+    <GradientBackground>
       <View style={[styles.filterContainer, { marginTop: headerHeight + Spacing.sm }]}>
         <FlatList
           horizontal
@@ -152,7 +152,7 @@ export default function HistoryScreen() {
           </Card>
         }
       />
-    </ThemedView>
+    </GradientBackground>
   );
 }
 

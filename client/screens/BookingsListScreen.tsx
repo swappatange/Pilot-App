@@ -4,7 +4,7 @@ import { useHeaderHeight } from '@react-navigation/elements';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { Feather } from '@expo/vector-icons';
 import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import { GradientBackground } from '@/components/GradientBackground';
 import { Card } from '@/components/Card';
 import { BookingCard } from '@/components/BookingCard';
 import { useTheme } from '@/hooks/useTheme';
@@ -35,7 +35,7 @@ export default function BookingsListScreen({ navigation }: Props) {
   const bookings = getBookingsByStatus(tabs.find(tab => tab.key === activeTab)?.statuses || []);
 
   return (
-    <ThemedView style={styles.container}>
+    <GradientBackground>
       <View style={[styles.tabsContainer, { marginTop: headerHeight + Spacing.sm }]}>
         {tabs.map((tab) => {
           const isActive = activeTab === tab.key;
@@ -91,7 +91,7 @@ export default function BookingsListScreen({ navigation }: Props) {
           </Card>
         }
       />
-    </ThemedView>
+    </GradientBackground>
   );
 }
 

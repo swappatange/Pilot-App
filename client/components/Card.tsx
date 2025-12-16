@@ -7,19 +7,22 @@ import { Spacing, BorderRadius, Shadows } from "@/constants/theme";
 interface CardProps {
   children?: React.ReactNode;
   style?: StyleProp<ViewStyle>;
+  transparent?: boolean;
 }
 
-export function Card({ children, style }: CardProps) {
+export function Card({ children, style, transparent = true }: CardProps) {
   const { theme } = useTheme();
-
+  
+  const backgroundColor = transparent 
+    ? 'rgba(255, 255, 255, 0.12)' 
+    : theme.cardBackground;
+  
   return (
     <View
       style={[
         styles.card,
-        {
-          backgroundColor: theme.cardBackground,
-        },
-        Shadows.card,
+        { backgroundColor },
+        !transparent && Shadows.card,
         style,
       ]}
     >

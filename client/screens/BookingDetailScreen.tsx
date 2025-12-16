@@ -3,7 +3,7 @@ import { View, StyleSheet, ScrollView, Pressable, Alert, Linking } from 'react-n
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
 import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import { GradientBackground } from '@/components/GradientBackground';
 import { Card } from '@/components/Card';
 import { Button } from '@/components/Button';
 import { StatusBadge } from '@/components/StatusBadge';
@@ -28,9 +28,11 @@ export default function BookingDetailScreen({ navigation, route }: Props) {
 
   if (!booking) {
     return (
-      <ThemedView style={styles.container}>
-        <ThemedText>Booking not found</ThemedText>
-      </ThemedView>
+      <GradientBackground>
+        <View style={styles.container}>
+          <ThemedText style={{ color: '#fff' }}>Booking not found</ThemedText>
+        </View>
+      </GradientBackground>
     );
   }
 
@@ -101,7 +103,7 @@ export default function BookingDetailScreen({ navigation, route }: Props) {
   };
 
   return (
-    <ThemedView style={styles.container}>
+    <GradientBackground>
       <ScrollView
         contentContainerStyle={[
           styles.scrollContent,
@@ -244,7 +246,7 @@ export default function BookingDetailScreen({ navigation, route }: Props) {
           )}
         </View>
       )}
-    </ThemedView>
+    </GradientBackground>
   );
 }
 

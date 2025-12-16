@@ -14,8 +14,9 @@ export function ThemedText({
   lightColor,
   darkColor,
   type = "body",
+  forDarkBackground = false,
   ...rest
-}: ThemedTextProps) {
+}: ThemedTextProps & { forDarkBackground?: boolean }) {
   const { theme, isDark } = useTheme();
 
   const getColor = () => {
@@ -29,6 +30,10 @@ export function ThemedText({
 
     if (type === "link") {
       return theme.link;
+    }
+
+    if (forDarkBackground) {
+      return "#FFFFFF";
     }
 
     return theme.text;
