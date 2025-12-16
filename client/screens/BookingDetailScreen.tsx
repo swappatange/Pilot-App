@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, StyleSheet, ScrollView, Pressable, Alert, Linking } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, StyleSheet, ScrollView, Pressable, Alert, Linking, Platform, ActivityIndicator } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { Feather } from '@expo/vector-icons';
@@ -15,18 +15,100 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RouteProp } from '@react-navigation/native';
 import type { HomeStackParamList } from '@/navigation/HomeStackNavigator';
 
+interface WeatherForecast {
+  temperature: number;
+  humidity: number;
+  windSpeed: number;
+  weatherCode: number;
+}
+
 interface Props {
   navigation: NativeStackNavigationProp<HomeStackParamList, 'BookingDetail'>;
   route: RouteProp<HomeStackParamList, 'BookingDetail'>;
 }
+
+const getWeatherDescription = (code: number, t: (key: string) => string): string => {
+  if (code === 0) return t('clear');
+  if (code <= 3) return t('cloudy');
+  if (code <= 49) return t('foggy');
+  if (code <= 69) return t('rainy');
+  if (code <= 79) return t('snowy');
+  if (code <= 99) return t('stormy');
+  return t('unknown');
+};
+
+const getWeatherIcon = (code: number): string => {
+  if (code === 0) return 'sun';
+  if (code <= 3) return 'cloud';
+  if (code <= 49) return 'cloud';
+  if (code <= 69) return 'cloud-rain';
+  if (code <= 79) return 'cloud-snow';
+  if (code <= 99) return 'cloud-lightning';
+  return 'cloud';
+};
+
+const getSprayingCondition = (windSpeed: number, weatherCode: number, t: (key: string) => string): { text: string; color: string } => {
+  if (weatherCode > 49) {
+    return { text: t('notRecommended'), color: BrandColors.dangerText };
+  }
+  if (windSpeed > 20) {
+    return { text: t('cautionHighWind'), color: BrandColors.warningText };
+  }
+  return { text: t('idealForSpraying'), color: BrandColors.successText };
+};
 
 export default function BookingDetailScreen({ navigation, route }: Props) {
   const insets = useSafeAreaInsets();
   const tabBarHeight = useBottomTabBarHeight();
   const { theme } = useTheme();
   const { t, bookings, updateBookingStatus } = useApp();
+  const [weather, setWeather] = useState<WeatherForecast | null>(null);
+  const [weatherLoading, setWeatherLoading] = useState(true);
 
   const booking = bookings.find(b => b.id === route.params.bookingId);
+
+  useEffect(() => {
+    const fetchWeather = async () => {
+      if (!booking) return;
+
+      try {
+        setWeatherLoading(true);
+        
+        if (Platform.OS === 'web') {
+          const mockWeather: WeatherForecast = {
+            temperature: 28,
+            humidity: 55,
+            windSpeed: 8,
+            weatherCode: 1,
+          };
+          setWeather(mockWeather);
+          setWeatherLoading(false);
+          return;
+        }
+
+        const scheduledDate = booking.scheduledDate;
+        const response = await fetch(
+          `https://api.open-meteo.com/v1/forecast?latitude=${booking.latitude}&longitude=${booking.longitude}&daily=temperature_2m_max,relative_humidity_2m_max,wind_speed_10m_max,weather_code&timezone=auto&start_date=${scheduledDate}&end_date=${scheduledDate}`
+        );
+        const data = await response.json();
+
+        if (data.daily) {
+          setWeather({
+            temperature: Math.round(data.daily.temperature_2m_max[0]),
+            humidity: data.daily.relative_humidity_2m_max[0],
+            windSpeed: Math.round(data.daily.wind_speed_10m_max[0]),
+            weatherCode: data.daily.weather_code[0],
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching weather:', error);
+      } finally {
+        setWeatherLoading(false);
+      }
+    };
+
+    fetchWeather();
+  }, [booking?.id, booking?.scheduledDate]);
 
   if (!booking) {
     return (
@@ -160,6 +242,67 @@ export default function BookingDetailScreen({ navigation, route }: Props) {
               <ThemedText style={styles.instructionsText}>{booking.specialInstructions}</ThemedText>
             </View>
           )}
+        </Card>
+
+        <Card style={styles.card}>
+          <ThemedText style={styles.cardTitle}>{t('weatherForecast')}</ThemedText>
+          {weatherLoading ? (
+            <View style={styles.weatherLoading}>
+              <ActivityIndicator color={BrandColors.primary} />
+            </View>
+          ) : weather ? (
+            <>
+              <View style={styles.weatherMain}>
+                <View style={styles.weatherIconContainer}>
+                  <Feather name={getWeatherIcon(weather.weatherCode) as any} size={40} color={BrandColors.white} />
+                  <ThemedText style={styles.weatherCondition}>
+                    {getWeatherDescription(weather.weatherCode, t)}
+                  </ThemedText>
+                </View>
+                <View style={styles.weatherTemp}>
+                  <ThemedText style={styles.temperatureValue}>{weather.temperature}</ThemedText>
+                  <ThemedText style={styles.temperatureUnit}>°C</ThemedText>
+                </View>
+              </View>
+
+              <View style={styles.weatherDetails}>
+                <View style={styles.weatherDetailItem}>
+                  <Feather name="wind" size={18} color={BrandColors.white} />
+                  <View style={styles.weatherDetailText}>
+                    <ThemedText style={[styles.weatherDetailLabel, { color: theme.textSecondary }]}>
+                      {t('windSpeed')}
+                    </ThemedText>
+                    <ThemedText style={styles.weatherDetailValue}>
+                      {weather.windSpeed} {t('kmh')}
+                    </ThemedText>
+                  </View>
+                </View>
+                <View style={styles.weatherDetailItem}>
+                  <Feather name="droplet" size={18} color={BrandColors.white} />
+                  <View style={styles.weatherDetailText}>
+                    <ThemedText style={[styles.weatherDetailLabel, { color: theme.textSecondary }]}>
+                      {t('humidity')}
+                    </ThemedText>
+                    <ThemedText style={styles.weatherDetailValue}>
+                      {weather.humidity}%
+                    </ThemedText>
+                  </View>
+                </View>
+              </View>
+
+              <View style={[
+                styles.sprayingCondition,
+                { backgroundColor: getSprayingCondition(weather.windSpeed, weather.weatherCode, t).color + '20' }
+              ]}>
+                <ThemedText style={[
+                  styles.sprayingConditionText,
+                  { color: getSprayingCondition(weather.windSpeed, weather.weatherCode, t).color }
+                ]}>
+                  {getSprayingCondition(weather.windSpeed, weather.weatherCode, t).text}
+                </ThemedText>
+              </View>
+            </>
+          ) : null}
         </Card>
 
         <Card style={styles.card}>
@@ -377,6 +520,71 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.full,
   },
   paymentText: {
+    ...Typography.small,
+    fontWeight: '600',
+  },
+  weatherLoading: {
+    paddingVertical: Spacing.xl,
+    alignItems: 'center',
+  },
+  weatherMain: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: Spacing.lg,
+  },
+  weatherIconContainer: {
+    alignItems: 'center',
+  },
+  weatherCondition: {
+    ...Typography.small,
+    marginTop: Spacing.xs,
+    color: BrandColors.white,
+  },
+  weatherTemp: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+  },
+  temperatureValue: {
+    fontSize: 48,
+    fontWeight: '700',
+    color: BrandColors.white,
+    lineHeight: 52,
+  },
+  temperatureUnit: {
+    ...Typography.h4,
+    color: BrandColors.white,
+    marginTop: Spacing.xs,
+  },
+  weatherDetails: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingTop: Spacing.lg,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(255,255,255,0.1)',
+  },
+  weatherDetailItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+  },
+  weatherDetailText: {
+    alignItems: 'flex-start',
+  },
+  weatherDetailLabel: {
+    ...Typography.caption,
+  },
+  weatherDetailValue: {
+    ...Typography.bodyBold,
+    color: BrandColors.white,
+  },
+  sprayingCondition: {
+    marginTop: Spacing.lg,
+    padding: Spacing.md,
+    borderRadius: BorderRadius.sm,
+    alignItems: 'center',
+  },
+  sprayingConditionText: {
     ...Typography.small,
     fontWeight: '600',
   },
