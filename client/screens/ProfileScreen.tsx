@@ -33,6 +33,17 @@ export default function ProfileScreen({ onLogout }: ProfileScreenProps) {
     ]);
   };
 
+  const handleDeleteAccount = () => {
+    Alert.alert(t('deleteAccount'), t('deleteAccountConfirm'), [
+      { text: t('no'), style: 'cancel' },
+      {
+        text: t('yes'),
+        style: 'destructive',
+        onPress: () => {},
+      },
+    ]);
+  };
+
   const currentLanguage = languages.find((l) => l.code === language);
 
   const sections = [
@@ -66,15 +77,34 @@ export default function ProfileScreen({ onLogout }: ProfileScreenProps) {
     { icon: 'bell', label: t('notifications'), value: 'On', onPress: () => {} },
   ];
 
-  const supportItems = [
+  const supportLegalItems = [
     { icon: 'help-circle', label: t('helpCenter'), onPress: () => {} },
     { icon: 'message-circle', label: t('contactSupport'), onPress: () => {} },
+    { icon: 'file-text', label: t('termsOfService'), onPress: () => {} },
+    { icon: 'shield', label: t('privacyPolicy'), onPress: () => {} },
   ];
 
-  const legalItems = [
-    { icon: 'lock', label: t('privacyPolicy'), onPress: () => {} },
-    { icon: 'file-text', label: t('termsOfService'), onPress: () => {} },
+  const accountItems = [
+    { icon: 'log-out', label: t('logout'), onPress: handleLogout, danger: false },
+    { icon: 'trash-2', label: t('deleteAccount'), onPress: handleDeleteAccount, danger: true },
   ];
+
+  const renderIconCircle = (iconName: string, isDanger: boolean = false) => (
+    <View
+      style={[
+        styles.iconCircle,
+        {
+          borderColor: isDanger ? BrandColors.danger : BrandColors.primary,
+        },
+      ]}
+    >
+      <Feather
+        name={iconName as any}
+        size={20}
+        color={isDanger ? BrandColors.danger : BrandColors.primary}
+      />
+    </View>
+  );
 
   return (
     <GradientBackground>
@@ -118,9 +148,7 @@ export default function ProfileScreen({ onLogout }: ProfileScreenProps) {
                     itemIndex < section.items.length - 1 && styles.itemBorder,
                   ]}
                 >
-                  <View style={[styles.itemIcon, { backgroundColor: 'rgba(255,255,255,0.15)' }]}>
-                    <Feather name={item.icon as any} size={18} color={BrandColors.white} />
-                  </View>
+                  {renderIconCircle(item.icon)}
                   <View style={styles.itemContent}>
                     <ThemedText style={[styles.itemLabel, { color: theme.textSecondary }]}>
                       {item.label}
@@ -146,14 +174,12 @@ export default function ProfileScreen({ onLogout }: ProfileScreenProps) {
                   ]}
                   onPress={item.onPress}
                 >
-                  <View style={[styles.itemIcon, { backgroundColor: 'rgba(255,255,255,0.15)' }]}>
-                    <Feather name={item.icon as any} size={18} color={BrandColors.white} />
-                  </View>
+                  {renderIconCircle(item.icon)}
                   <ThemedText style={styles.menuLabel}>{item.label}</ThemedText>
                   <ThemedText style={[styles.menuValue, { color: theme.textSecondary }]}>
                     {item.value}
                   </ThemedText>
-                  <Feather name="chevron-right" size={20} color={theme.textSecondary} />
+                  <Feather name="chevron-right" size={20} color={BrandColors.white} />
                 </Pressable>
                 {item.label === t('language') && showLanguages && (
                   <View style={styles.languageList}>
@@ -185,63 +211,52 @@ export default function ProfileScreen({ onLogout }: ProfileScreenProps) {
         </View>
 
         <View style={styles.section}>
-          <ThemedText style={styles.sectionTitle}>{t('support')}</ThemedText>
+          <ThemedText style={styles.sectionTitle}>{t('supportAndLegal')}</ThemedText>
           <Card style={styles.sectionCard}>
-            {supportItems.map((item, index) => (
+            {supportLegalItems.map((item, index) => (
               <Pressable
                 key={index}
                 style={({ pressed }) => [
                   styles.menuRow,
-                  index < supportItems.length - 1 && styles.itemBorder,
+                  index < supportLegalItems.length - 1 && styles.itemBorder,
                   pressed && { opacity: 0.7 },
                 ]}
                 onPress={item.onPress}
               >
-                <View style={[styles.itemIcon, { backgroundColor: BrandColors.primary + '15' }]}>
-                  <Feather name={item.icon as any} size={18} color={BrandColors.primary} />
-                </View>
+                {renderIconCircle(item.icon)}
                 <ThemedText style={styles.menuLabel}>{item.label}</ThemedText>
-                <Feather name="chevron-right" size={20} color={theme.textSecondary} />
+                <Feather name="chevron-right" size={20} color={BrandColors.white} />
               </Pressable>
             ))}
           </Card>
         </View>
 
         <View style={styles.section}>
-          <ThemedText style={styles.sectionTitle}>{t('legal')}</ThemedText>
+          <ThemedText style={styles.sectionTitle}>{t('account')}</ThemedText>
           <Card style={styles.sectionCard}>
-            {legalItems.map((item, index) => (
+            {accountItems.map((item, index) => (
               <Pressable
                 key={index}
                 style={({ pressed }) => [
                   styles.menuRow,
-                  index < legalItems.length - 1 && styles.itemBorder,
+                  index < accountItems.length - 1 && styles.itemBorder,
                   pressed && { opacity: 0.7 },
                 ]}
                 onPress={item.onPress}
               >
-                <View style={[styles.itemIcon, { backgroundColor: BrandColors.primary + '15' }]}>
-                  <Feather name={item.icon as any} size={18} color={BrandColors.primary} />
-                </View>
-                <ThemedText style={styles.menuLabel}>{item.label}</ThemedText>
-                <Feather name="chevron-right" size={20} color={theme.textSecondary} />
+                {renderIconCircle(item.icon, item.danger)}
+                <ThemedText
+                  style={[
+                    styles.menuLabel,
+                    item.danger && { color: BrandColors.danger },
+                  ]}
+                >
+                  {item.label}
+                </ThemedText>
               </Pressable>
             ))}
           </Card>
         </View>
-
-        <Pressable
-          style={({ pressed }) => [
-            styles.logoutButton,
-            pressed && { opacity: 0.7 },
-          ]}
-          onPress={handleLogout}
-        >
-          <Feather name="log-out" size={20} color={BrandColors.danger} />
-          <ThemedText style={[styles.logoutText, { color: BrandColors.danger }]}>
-            {t('logout')}
-          </ThemedText>
-        </Pressable>
       </ScrollView>
     </GradientBackground>
   );
@@ -308,15 +323,17 @@ const styles = StyleSheet.create({
   },
   itemBorder: {
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(0,0,0,0.05)',
+    borderBottomColor: 'rgba(255,255,255,0.1)',
   },
-  itemIcon: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+  iconCircle: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    borderWidth: 2,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: Spacing.md,
+    backgroundColor: 'transparent',
   },
   itemContent: {
     flex: 1,
@@ -336,6 +353,7 @@ const styles = StyleSheet.create({
   menuLabel: {
     flex: 1,
     ...Typography.body,
+    color: BrandColors.white,
   },
   menuValue: {
     ...Typography.small,
@@ -356,17 +374,5 @@ const styles = StyleSheet.create({
   },
   languageName: {
     ...Typography.body,
-  },
-  logoutButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: Spacing.lg,
-    gap: Spacing.sm,
-    marginTop: Spacing.lg,
-  },
-  logoutText: {
-    ...Typography.body,
-    fontWeight: '600',
   },
 });
