@@ -14,7 +14,7 @@ export function Card({ children, style, transparent = true }: CardProps) {
   const { theme } = useTheme();
   
   const backgroundColor = transparent 
-    ? 'rgba(255, 255, 255, 0.12)' 
+    ? 'rgba(0, 60, 50, 0.65)' 
     : theme.cardBackground;
   
   return (
