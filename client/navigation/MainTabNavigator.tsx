@@ -4,6 +4,7 @@ import { Feather, FontAwesome5 } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
 import { Platform, StyleSheet } from 'react-native';
 import HomeStackNavigator from '@/navigation/HomeStackNavigator';
+import CalendarScreen from '@/screens/CalendarScreen';
 import EarningsScreen from '@/screens/EarningsScreen';
 import HistoryScreen from '@/screens/HistoryScreen';
 import ProfileScreen from '@/screens/ProfileScreen';
@@ -13,6 +14,7 @@ import { BrandColors } from '@/constants/theme';
 
 export type MainTabParamList = {
   HomeTab: undefined;
+  CalendarTab: undefined;
   EarningsTab: undefined;
   HistoryTab: undefined;
   ProfileTab: undefined;
@@ -74,6 +76,19 @@ export default function MainTabNavigator({ onLogout }: MainTabNavigatorProps) {
           title: t('dashboard'),
           tabBarIcon: ({ color, size }) => (
             <Feather name="home" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="CalendarTab"
+        component={CalendarScreen}
+        options={{
+          headerShown: true,
+          headerTitle: t('calendar'),
+          ...headerConfig,
+          title: t('calendar'),
+          tabBarIcon: ({ color, size }) => (
+            <Feather name="calendar" size={size} color={color} />
           ),
         }}
       />
