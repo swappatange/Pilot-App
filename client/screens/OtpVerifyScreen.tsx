@@ -3,10 +3,9 @@ import { View, StyleSheet, TextInput, Pressable, Alert } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
 import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import { GradientBackground } from '@/components/GradientBackground';
 import { Button } from '@/components/Button';
 import { KeyboardAwareScrollViewCompat } from '@/components/KeyboardAwareScrollViewCompat';
-import { useTheme } from '@/hooks/useTheme';
 import { useApp } from '@/context/AppContext';
 import { BrandColors, Spacing, BorderRadius, Typography } from '@/constants/theme';
 
@@ -18,7 +17,6 @@ interface OtpVerifyScreenProps {
 
 export default function OtpVerifyScreen({ phone, onBack, onVerify }: OtpVerifyScreenProps) {
   const insets = useSafeAreaInsets();
-  const { theme } = useTheme();
   const { t, login } = useApp();
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [countdown, setCountdown] = useState(60);
@@ -72,13 +70,13 @@ export default function OtpVerifyScreen({ phone, onBack, onVerify }: OtpVerifySc
   const isOtpComplete = otp.every(digit => digit !== '');
 
   return (
-    <ThemedView style={styles.container}>
+    <GradientBackground>
       <View style={[styles.header, { paddingTop: insets.top + Spacing.lg }]}>
         <Pressable
           style={({ pressed }) => [styles.backButton, pressed && { opacity: 0.7 }]}
           onPress={onBack}
         >
-          <Feather name="arrow-left" size={24} color={theme.text} />
+          <Feather name="arrow-left" size={24} color={BrandColors.white} />
         </Pressable>
         <ThemedText style={styles.headerTitle}>{t('verifyOtp')}</ThemedText>
         <View style={styles.placeholder} />
@@ -91,7 +89,7 @@ export default function OtpVerifyScreen({ phone, onBack, onVerify }: OtpVerifySc
         ]}
         showsVerticalScrollIndicator={false}
       >
-        <ThemedText style={[styles.subtitle, { color: theme.textSecondary }]}>
+        <ThemedText style={styles.subtitle}>
           {t('enterOtp')}
         </ThemedText>
         <ThemedText style={styles.phone}>{maskedPhone}</ThemedText>
@@ -104,9 +102,7 @@ export default function OtpVerifyScreen({ phone, onBack, onVerify }: OtpVerifySc
               style={[
                 styles.otpInput,
                 {
-                  backgroundColor: theme.backgroundDefault,
-                  borderColor: focusedIndex === index ? BrandColors.primary : theme.border,
-                  color: theme.text,
+                  borderColor: focusedIndex === index ? BrandColors.white : 'rgba(255,255,255,0.5)',
                 },
               ]}
               keyboardType="number-pad"
@@ -122,12 +118,12 @@ export default function OtpVerifyScreen({ phone, onBack, onVerify }: OtpVerifySc
 
         <View style={styles.resendContainer}>
           {countdown > 0 ? (
-            <ThemedText style={[styles.resendText, { color: theme.textSecondary }]}>
+            <ThemedText style={styles.resendText}>
               {t('resendIn')} {countdown}s
             </ThemedText>
           ) : (
             <Pressable onPress={handleResend}>
-              <ThemedText style={[styles.resendLink, { color: BrandColors.primary }]}>
+              <ThemedText style={styles.resendLink}>
                 {t('resendOtp')}
               </ThemedText>
             </Pressable>
@@ -138,17 +134,15 @@ export default function OtpVerifyScreen({ phone, onBack, onVerify }: OtpVerifySc
           title={t('verify')}
           onPress={handleVerify}
           disabled={!isOtpComplete}
+          variant="outlineLight"
           style={styles.button}
         />
       </KeyboardAwareScrollViewCompat>
-    </ThemedView>
+    </GradientBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -165,6 +159,7 @@ const styles = StyleSheet.create({
     ...Typography.h4,
     flex: 1,
     textAlign: 'center',
+    color: BrandColors.white,
   },
   placeholder: {
     width: 40,
@@ -177,12 +172,14 @@ const styles = StyleSheet.create({
   subtitle: {
     ...Typography.body,
     textAlign: 'center',
+    color: 'rgba(255,255,255,0.8)',
   },
   phone: {
     ...Typography.bodyBold,
     textAlign: 'center',
     marginTop: Spacing.xs,
     marginBottom: Spacing['3xl'],
+    color: BrandColors.white,
   },
   otpContainer: {
     flexDirection: 'row',
@@ -196,6 +193,8 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.sm,
     borderWidth: 2,
     textAlign: 'center',
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    color: BrandColors.white,
     ...Typography.h3,
   },
   resendContainer: {
@@ -204,10 +203,12 @@ const styles = StyleSheet.create({
   },
   resendText: {
     ...Typography.small,
+    color: 'rgba(255,255,255,0.7)',
   },
   resendLink: {
     ...Typography.body,
     fontWeight: '600',
+    color: BrandColors.white,
   },
   button: {
     marginTop: 'auto',

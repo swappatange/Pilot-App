@@ -3,9 +3,8 @@ import { View, StyleSheet, ScrollView, Pressable } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
 import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import { GradientBackground } from '@/components/GradientBackground';
 import { Button } from '@/components/Button';
-import { useTheme } from '@/hooks/useTheme';
 import { Language, languages } from '@/constants/translations';
 import { useApp } from '@/context/AppContext';
 import { BrandColors, Spacing, BorderRadius, Typography } from '@/constants/theme';
@@ -16,7 +15,6 @@ interface LanguageSelectScreenProps {
 
 export default function LanguageSelectScreen({ onContinue }: LanguageSelectScreenProps) {
   const insets = useSafeAreaInsets();
-  const { theme } = useTheme();
   const { language, setLanguage, t } = useApp();
 
   const handleLanguageSelect = (lang: Language) => {
@@ -24,7 +22,7 @@ export default function LanguageSelectScreen({ onContinue }: LanguageSelectScree
   };
 
   return (
-    <ThemedView style={styles.container}>
+    <GradientBackground>
       <ScrollView
         contentContainerStyle={[
           styles.scrollContent,
@@ -46,20 +44,20 @@ export default function LanguageSelectScreen({ onContinue }: LanguageSelectScree
                 style={({ pressed }) => [
                   styles.languageCard,
                   {
-                    backgroundColor: isSelected ? BrandColors.primary + '15' : theme.cardBackground,
-                    borderColor: isSelected ? BrandColors.primary : theme.border,
+                    backgroundColor: isSelected ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.15)',
+                    borderColor: isSelected ? BrandColors.white : 'rgba(255,255,255,0.3)',
                   },
                   pressed && { opacity: 0.7 },
                 ]}
                 onPress={() => handleLanguageSelect(lang.code)}
               >
                 <ThemedText style={styles.nativeName}>{lang.nativeName}</ThemedText>
-                <ThemedText style={[styles.englishName, { color: theme.textSecondary }]}>
+                <ThemedText style={styles.englishName}>
                   {lang.name}
                 </ThemedText>
                 {isSelected && (
                   <View style={styles.checkmark}>
-                    <Feather name="check" size={16} color={BrandColors.white} />
+                    <Feather name="check" size={16} color={BrandColors.primary} />
                   </View>
                 )}
               </Pressable>
@@ -73,20 +71,16 @@ export default function LanguageSelectScreen({ onContinue }: LanguageSelectScree
           styles.footer,
           {
             paddingBottom: insets.bottom + Spacing.lg,
-            backgroundColor: theme.backgroundRoot,
           },
         ]}
       >
-        <Button title={t('continue')} onPress={onContinue} />
+        <Button title={t('continue')} onPress={onContinue} variant="outlineLight" />
       </View>
-    </ThemedView>
+    </GradientBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   scrollContent: {
     paddingHorizontal: Spacing.xl,
   },
@@ -94,6 +88,7 @@ const styles = StyleSheet.create({
     ...Typography.h2,
     textAlign: 'center',
     marginBottom: Spacing['3xl'],
+    color: BrandColors.white,
   },
   grid: {
     flexDirection: 'row',
@@ -113,9 +108,11 @@ const styles = StyleSheet.create({
   nativeName: {
     ...Typography.h4,
     marginBottom: Spacing.xs,
+    color: BrandColors.white,
   },
   englishName: {
     ...Typography.small,
+    color: 'rgba(255,255,255,0.8)',
   },
   checkmark: {
     position: 'absolute',
@@ -124,7 +121,7 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     borderRadius: 12,
-    backgroundColor: BrandColors.primary,
+    backgroundColor: BrandColors.white,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -135,7 +132,6 @@ const styles = StyleSheet.create({
     right: 0,
     paddingHorizontal: Spacing.xl,
     paddingTop: Spacing.lg,
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(0,0,0,0.05)',
+    backgroundColor: 'rgba(0,0,0,0.1)',
   },
 });

@@ -16,7 +16,7 @@ interface ButtonProps {
   title: string;
   style?: StyleProp<ViewStyle>;
   disabled?: boolean;
-  variant?: 'primary' | 'outline' | 'danger';
+  variant?: 'primary' | 'outline' | 'outlineLight' | 'danger';
 }
 
 const springConfig: WithSpringConfig = {
@@ -63,6 +63,12 @@ export function Button({
           borderWidth: 2,
           borderColor: BrandColors.primary,
         };
+      case 'outlineLight':
+        return {
+          backgroundColor: 'rgba(255,255,255,0.15)',
+          borderWidth: 2,
+          borderColor: BrandColors.white,
+        };
       case 'danger':
         return {
           backgroundColor: 'transparent',
@@ -80,6 +86,8 @@ export function Button({
     switch (variant) {
       case 'outline':
         return BrandColors.primary;
+      case 'outlineLight':
+        return BrandColors.white;
       case 'danger':
         return BrandColors.danger;
       default:

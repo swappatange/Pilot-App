@@ -2,10 +2,9 @@ import React, { useState } from 'react';
 import { View, StyleSheet, Image, TextInput, Pressable, Alert } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import { GradientBackground } from '@/components/GradientBackground';
 import { Button } from '@/components/Button';
 import { KeyboardAwareScrollViewCompat } from '@/components/KeyboardAwareScrollViewCompat';
-import { useTheme } from '@/hooks/useTheme';
 import { useApp } from '@/context/AppContext';
 import { BrandColors, Spacing, BorderRadius, Typography } from '@/constants/theme';
 
@@ -15,7 +14,6 @@ interface PhoneInputScreenProps {
 
 export default function PhoneInputScreen({ onSendOtp }: PhoneInputScreenProps) {
   const insets = useSafeAreaInsets();
-  const { theme } = useTheme();
   const { t } = useApp();
   const [phone, setPhone] = useState('');
   const [isFocused, setIsFocused] = useState(false);
@@ -29,7 +27,7 @@ export default function PhoneInputScreen({ onSendOtp }: PhoneInputScreenProps) {
   };
 
   return (
-    <ThemedView style={styles.container}>
+    <GradientBackground>
       <KeyboardAwareScrollViewCompat
         contentContainerStyle={[
           styles.scrollContent,
@@ -49,20 +47,12 @@ export default function PhoneInputScreen({ onSendOtp }: PhoneInputScreenProps) {
         </View>
 
         <ThemedText style={styles.title}>{t('welcome')}</ThemedText>
-        <ThemedText style={[styles.subtitle, { color: theme.textSecondary }]}>
+        <ThemedText style={styles.subtitle}>
           {t('enterPhone')}
         </ThemedText>
 
         <View style={styles.inputContainer}>
-          <View
-            style={[
-              styles.countryCode,
-              {
-                backgroundColor: theme.backgroundDefault,
-                borderColor: theme.border,
-              },
-            ]}
-          >
+          <View style={styles.countryCode}>
             <ThemedText style={styles.countryCodeText}>+91</ThemedText>
           </View>
 
@@ -70,13 +60,11 @@ export default function PhoneInputScreen({ onSendOtp }: PhoneInputScreenProps) {
             style={[
               styles.input,
               {
-                backgroundColor: theme.backgroundDefault,
-                borderColor: isFocused ? BrandColors.primary : theme.border,
-                color: theme.text,
+                borderColor: isFocused ? BrandColors.white : 'rgba(255,255,255,0.5)',
               },
             ]}
             placeholder={t('phoneNumber')}
-            placeholderTextColor={theme.textSecondary}
+            placeholderTextColor="rgba(255,255,255,0.6)"
             keyboardType="phone-pad"
             maxLength={10}
             value={phone}
@@ -90,34 +78,32 @@ export default function PhoneInputScreen({ onSendOtp }: PhoneInputScreenProps) {
           title={t('sendOtp')}
           onPress={handleSendOtp}
           disabled={phone.length !== 10}
+          variant="outlineLight"
           style={styles.button}
         />
 
         <View style={styles.legalContainer}>
-          <ThemedText style={[styles.legalText, { color: theme.textSecondary }]}>
+          <ThemedText style={styles.legalText}>
             By continuing, you agree to our{' '}
           </ThemedText>
           <Pressable>
-            <ThemedText style={[styles.legalLink, { color: BrandColors.primary }]}>
+            <ThemedText style={styles.legalLink}>
               {t('termsOfService')}
             </ThemedText>
           </Pressable>
-          <ThemedText style={[styles.legalText, { color: theme.textSecondary }]}> and </ThemedText>
+          <ThemedText style={styles.legalText}> and </ThemedText>
           <Pressable>
-            <ThemedText style={[styles.legalLink, { color: BrandColors.primary }]}>
+            <ThemedText style={styles.legalLink}>
               {t('privacyPolicy')}
             </ThemedText>
           </Pressable>
         </View>
       </KeyboardAwareScrollViewCompat>
-    </ThemedView>
+    </GradientBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   scrollContent: {
     paddingHorizontal: Spacing.xl,
     flexGrow: 1,
@@ -134,11 +120,13 @@ const styles = StyleSheet.create({
     ...Typography.h2,
     textAlign: 'center',
     marginBottom: Spacing.sm,
+    color: BrandColors.white,
   },
   subtitle: {
     ...Typography.body,
     textAlign: 'center',
     marginBottom: Spacing['3xl'],
+    color: 'rgba(255,255,255,0.8)',
   },
   inputContainer: {
     flexDirection: 'row',
@@ -149,12 +137,15 @@ const styles = StyleSheet.create({
     height: 52,
     paddingHorizontal: Spacing.lg,
     borderRadius: BorderRadius.sm,
-    borderWidth: 1,
+    borderWidth: 2,
+    borderColor: 'rgba(255,255,255,0.5)',
+    backgroundColor: 'rgba(255,255,255,0.15)',
     justifyContent: 'center',
   },
   countryCodeText: {
     ...Typography.body,
     fontWeight: '600',
+    color: BrandColors.white,
   },
   input: {
     flex: 1,
@@ -162,6 +153,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.lg,
     borderRadius: BorderRadius.sm,
     borderWidth: 2,
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    color: BrandColors.white,
     ...Typography.body,
   },
   button: {
@@ -175,9 +168,11 @@ const styles = StyleSheet.create({
   },
   legalText: {
     ...Typography.caption,
+    color: 'rgba(255,255,255,0.7)',
   },
   legalLink: {
     ...Typography.caption,
     fontWeight: '600',
+    color: BrandColors.white,
   },
 });

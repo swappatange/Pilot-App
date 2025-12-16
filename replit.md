@@ -40,10 +40,18 @@ assets/                  # App assets
 ```
 
 ## Design Guidelines
-- Follows Atomik brand theme with green gradient colors (#22C55E to #10B981)
+- Follows Atomik brand theme with teal-to-green gradient (#2B7A8C → #3D8B6E → #4B9B52)
+- Geometric hexagonal/diamond pattern overlay on auth screens
 - iOS 26 Liquid Glass UI design language
 - Mobile-first responsive design
 - See design_guidelines.md for complete specifications
+
+## Recent Changes (Dec 2024)
+- Updated brand gradient to teal-to-green theme matching www.atomik.in
+- Added GradientBackground component with geometric SVG pattern overlay
+- Removed "Pilot" references - app name is now simply "Atomik"
+- Removed "Advancing Agriculture" tagline from splash screen
+- Added outlineLight button variant for white styling on gradient backgrounds
 
 ## Key Features
 1. **Multi-language Support**: 7 Indian languages with full translations
