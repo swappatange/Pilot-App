@@ -48,9 +48,9 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
 
   return (
     <LinearGradient
-      colors={[BrandColors.primaryDark, BrandColors.primary, BrandColors.accent]}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 1 }}
+      colors={[BrandColors.gradientTop, BrandColors.gradientMiddle, BrandColors.gradientBottom]}
+      start={{ x: 0.5, y: 0 }}
+      end={{ x: 0.5, y: 1 }}
       style={styles.container}
     >
       <View style={styles.content}>

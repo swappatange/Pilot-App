@@ -1,10 +1,16 @@
 import { Platform } from "react-native";
 
 export const BrandColors = {
-  primary: "#2ecc71",
-  primaryDark: "#27ae60",
-  primaryDeep: "#1e8449",
-  accent: "#58d68d",
+  // Atomik brand gradient colors (teal-blue to green)
+  gradientTop: "#2B7A8C",
+  gradientMiddle: "#3D8B6E",
+  gradientBottom: "#4B9B52",
+  primary: "#4B9B52",
+  primaryDark: "#3D8B6E",
+  primaryDeep: "#2B7A8C",
+  accent: "#5CAB62",
+  teal: "#2B7A8C",
+  // Status colors
   warning: "#f39c12",
   warningLight: "#fff3cd",
   warningText: "#856404",
@@ -14,6 +20,7 @@ export const BrandColors = {
   danger: "#dc3545",
   dangerLight: "#f8d7da",
   dangerText: "#721c24",
+  // Neutrals
   white: "#ffffff",
   cream: "#f8f9fa",
   gray100: "#f8f9fa",

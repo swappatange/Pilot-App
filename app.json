@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Atomik Pilot",
-    "slug": "atomik-pilot",
+    "name": "Atomik",
+    "slug": "atomik",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -14,7 +14,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#27ae60",
+        "backgroundColor": "#3D8B6E",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
@@ -34,9 +34,9 @@
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#27ae60",
+          "backgroundColor": "#3D8B6E",
           "dark": {
-            "backgroundColor": "#1e8449"
+            "backgroundColor": "#2B7A8C"
           }
         }
       ],

@@ -14,7 +14,7 @@ export const translations: Record<Language, Record<string, string>> = {
   en: {
     selectLanguage: 'Select Language',
     continue: 'Continue',
-    welcome: 'Welcome to Atomik Pilot',
+    welcome: 'Welcome to Atomik',
     enterPhone: 'Enter your mobile number to get started',
     phoneNumber: 'Phone Number',
     sendOtp: 'Send OTP',
@@ -118,7 +118,7 @@ export const translations: Record<Language, Record<string, string>> = {
   hi: {
     selectLanguage: 'भाषा चुनें',
     continue: 'जारी रखें',
-    welcome: 'Atomik Pilot में आपका स्वागत है',
+    welcome: 'Atomik में आपका स्वागत है',
     enterPhone: 'शुरू करने के लिए अपना मोबाइल नंबर दर्ज करें',
     phoneNumber: 'फोन नंबर',
     sendOtp: 'OTP भेजें',
@@ -222,7 +222,7 @@ export const translations: Record<Language, Record<string, string>> = {
   pa: {
     selectLanguage: 'ਭਾਸ਼ਾ ਚੁਣੋ',
     continue: 'ਜਾਰੀ ਰੱਖੋ',
-    welcome: 'Atomik Pilot ਵਿੱਚ ਤੁਹਾਡਾ ਸੁਆਗਤ ਹੈ',
+    welcome: 'Atomik ਵਿੱਚ ਤੁਹਾਡਾ ਸੁਆਗਤ ਹੈ',
     enterPhone: 'ਸ਼ੁਰੂ ਕਰਨ ਲਈ ਆਪਣਾ ਮੋਬਾਈਲ ਨੰਬਰ ਦਰਜ ਕਰੋ',
     phoneNumber: 'ਫ਼ੋਨ ਨੰਬਰ',
     sendOtp: 'OTP ਭੇਜੋ',
@@ -326,7 +326,7 @@ export const translations: Record<Language, Record<string, string>> = {
   mr: {
     selectLanguage: 'भाषा निवडा',
     continue: 'पुढे चला',
-    welcome: 'Atomik Pilot मध्ये आपले स्वागत आहे',
+    welcome: 'Atomik मध्ये आपले स्वागत आहे',
     enterPhone: 'सुरू करण्यासाठी आपला मोबाईल नंबर टाका',
     phoneNumber: 'फोन नंबर',
     sendOtp: 'OTP पाठवा',
@@ -430,7 +430,7 @@ export const translations: Record<Language, Record<string, string>> = {
   kn: {
     selectLanguage: 'ಭಾಷೆ ಆಯ್ಕೆಮಾಡಿ',
     continue: 'ಮುಂದುವರಿಸಿ',
-    welcome: 'Atomik Pilot ಗೆ ಸುಸ್ವಾಗತ',
+    welcome: 'Atomik ಗೆ ಸುಸ್ವಾಗತ',
     enterPhone: 'ಪ್ರಾರಂಭಿಸಲು ನಿಮ್ಮ ಮೊಬೈಲ್ ಸಂಖ್ಯೆ ನಮೂದಿಸಿ',
     phoneNumber: 'ಫೋನ್ ಸಂಖ್ಯೆ',
     sendOtp: 'OTP ಕಳುಹಿಸಿ',
@@ -534,7 +534,7 @@ export const translations: Record<Language, Record<string, string>> = {
   te: {
     selectLanguage: 'భాష ఎంచుకోండి',
     continue: 'కొనసాగించు',
-    welcome: 'Atomik Pilot కు స్వాగతం',
+    welcome: 'Atomik కు స్వాగతం',
     enterPhone: 'ప్రారంభించడానికి మీ మొబైల్ నంబర్ నమోదు చేయండి',
     phoneNumber: 'ఫోన్ నంబర్',
     sendOtp: 'OTP పంపండి',
@@ -638,7 +638,7 @@ export const translations: Record<Language, Record<string, string>> = {
   ta: {
     selectLanguage: 'மொழியைத் தேர்ந்தெடுக்கவும்',
     continue: 'தொடரவும்',
-    welcome: 'Atomik Pilot க்கு வரவேற்கிறோம்',
+    welcome: 'Atomik க்கு வரவேற்கிறோம்',
     enterPhone: 'தொடங்க உங்கள் மொபைல் எண்ணை உள்ளிடவும்',
     phoneNumber: 'தொலைபேசி எண்',
     sendOtp: 'OTP அனுப்பு',

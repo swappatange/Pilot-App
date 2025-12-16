@@ -53,7 +53,7 @@ export default function DashboardScreen({ navigation }: Props) {
           <ThemedText style={[styles.greeting, { color: theme.textSecondary }]}>
             {getGreeting()},
           </ThemedText>
-          <ThemedText style={styles.operatorName}>{operator?.name || 'Pilot'}</ThemedText>
+          <ThemedText style={styles.operatorName}>{operator?.name || 'Operator'}</ThemedText>
         </Card>
 
         <ScrollView
