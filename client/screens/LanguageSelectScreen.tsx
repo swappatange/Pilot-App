@@ -34,6 +34,9 @@ export default function LanguageSelectScreen({ onContinue }: LanguageSelectScree
         showsVerticalScrollIndicator={false}
       >
         <ThemedText style={styles.title}>{t('selectLanguage')}</ThemedText>
+        <ThemedText style={styles.subtitle}>
+          Choose your preferred language to continue
+        </ThemedText>
 
         <View style={styles.grid}>
           {languages.map((lang) => {
@@ -86,9 +89,13 @@ const styles = StyleSheet.create({
   },
   title: {
     ...Typography.h2,
-    textAlign: 'center',
-    marginBottom: Spacing['3xl'],
+    marginBottom: Spacing.sm,
     color: BrandColors.white,
+  },
+  subtitle: {
+    ...Typography.body,
+    color: 'rgba(255,255,255,0.85)',
+    marginBottom: Spacing['3xl'],
   },
   grid: {
     flexDirection: 'row',

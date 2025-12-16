@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import { View, StyleSheet, Dimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import Svg, { Path, G, Defs, Pattern, Rect } from 'react-native-svg';
+import Svg, { Path, Defs, Pattern, Rect } from 'react-native-svg';
 import { BrandColors } from '@/constants/theme';
 
 interface GradientBackgroundProps {
@@ -11,10 +11,9 @@ interface GradientBackgroundProps {
 
 const { width, height } = Dimensions.get('window');
 
-function HexPattern() {
-  const hexSize = 60;
-  const patternHeight = hexSize * Math.sqrt(3);
-  const patternWidth = hexSize * 3;
+function TriangularMeshPattern() {
+  const cellWidth = 48;
+  const cellHeight = 42;
   
   return (
     <Svg
@@ -24,65 +23,38 @@ function HexPattern() {
     >
       <Defs>
         <Pattern
-          id="hexPattern"
-          width={patternWidth}
-          height={patternHeight}
+          id="triangularMesh"
+          width={cellWidth}
+          height={cellHeight}
           patternUnits="userSpaceOnUse"
         >
           <Path
-            d={`M ${hexSize * 0.5},0 
-                L ${hexSize * 1.5},0 
-                L ${hexSize * 2},${patternHeight * 0.5} 
-                L ${hexSize * 1.5},${patternHeight} 
-                L ${hexSize * 0.5},${patternHeight} 
-                L 0,${patternHeight * 0.5} Z`}
-            stroke="rgba(255,255,255,0.08)"
-            strokeWidth={1}
+            d={`M 0,${cellHeight} L ${cellWidth / 2},0 L ${cellWidth},${cellHeight}`}
+            stroke="rgba(255,255,255,0.12)"
+            strokeWidth={0.75}
             fill="none"
           />
           <Path
-            d={`M ${hexSize * 2},0 
-                L ${hexSize * 3},0 
-                L ${hexSize * 3},${patternHeight * 0.5} 
-                L ${hexSize * 3},${patternHeight} 
-                L ${hexSize * 2},${patternHeight} 
-                L ${hexSize * 1.5},${patternHeight * 0.5} Z`}
-            stroke="rgba(255,255,255,0.08)"
-            strokeWidth={1}
+            d={`M 0,0 L ${cellWidth / 2},${cellHeight} L ${cellWidth},0`}
+            stroke="rgba(255,255,255,0.12)"
+            strokeWidth={0.75}
+            fill="none"
+          />
+          <Path
+            d={`M 0,0 L 0,${cellHeight}`}
+            stroke="rgba(255,255,255,0.12)"
+            strokeWidth={0.75}
+            fill="none"
+          />
+          <Path
+            d={`M ${cellWidth},0 L ${cellWidth},${cellHeight}`}
+            stroke="rgba(255,255,255,0.12)"
+            strokeWidth={0.75}
             fill="none"
           />
         </Pattern>
       </Defs>
-      <Rect x="0" y="0" width="100%" height="100%" fill="url(#hexPattern)" />
-    </Svg>
-  );
-}
-
-function DiamondPattern() {
-  const size = 50;
-  
-  return (
-    <Svg
-      width={width}
-      height={height}
-      style={StyleSheet.absoluteFill}
-    >
-      <Defs>
-        <Pattern
-          id="diamondPattern"
-          width={size}
-          height={size}
-          patternUnits="userSpaceOnUse"
-        >
-          <Path
-            d={`M ${size / 2},0 L ${size},${size / 2} L ${size / 2},${size} L 0,${size / 2} Z`}
-            stroke="rgba(255,255,255,0.06)"
-            strokeWidth={0.5}
-            fill="none"
-          />
-        </Pattern>
-      </Defs>
-      <Rect x="0" y="0" width="100%" height="100%" fill="url(#diamondPattern)" />
+      <Rect x="0" y="0" width="100%" height="100%" fill="url(#triangularMesh)" />
     </Svg>
   );
 }
@@ -95,7 +67,7 @@ export function GradientBackground({ children, showPattern = true }: GradientBac
       end={{ x: 0.5, y: 1 }}
       style={styles.container}
     >
-      {showPattern && <DiamondPattern />}
+      {showPattern && <TriangularMeshPattern />}
       <View style={styles.content}>
         {children}
       </View>
