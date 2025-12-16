@@ -134,7 +134,6 @@ export default function OtpVerifyScreen({ phone, onBack, onVerify }: OtpVerifySc
           title={t('verify')}
           onPress={handleVerify}
           disabled={!isOtpComplete}
-          variant="outlineLight"
           style={styles.button}
         />
       </KeyboardAwareScrollViewCompat>

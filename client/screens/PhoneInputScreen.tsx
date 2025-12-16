@@ -78,7 +78,6 @@ export default function PhoneInputScreen({ onSendOtp }: PhoneInputScreenProps) {
           title={t('sendOtp')}
           onPress={handleSendOtp}
           disabled={phone.length !== 10}
-          variant="outlineLight"
           style={styles.button}
         />
 

@@ -60,7 +60,7 @@ export default function LanguageSelectScreen({ onContinue }: LanguageSelectScree
                 </ThemedText>
                 {isSelected && (
                   <View style={styles.checkmark}>
-                    <Feather name="check" size={16} color={BrandColors.primary} />
+                    <Feather name="check" size={16} color="#1A5C6A" />
                   </View>
                 )}
               </Pressable>
@@ -77,7 +77,7 @@ export default function LanguageSelectScreen({ onContinue }: LanguageSelectScree
           },
         ]}
       >
-        <Button title={t('continue')} onPress={onContinue} variant="outlineLight" />
+        <Button title={t('continue')} onPress={onContinue} />
       </View>
     </GradientBackground>
   );

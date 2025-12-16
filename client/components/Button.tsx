@@ -1,5 +1,6 @@
 import React from "react";
-import { StyleSheet, Pressable, ViewStyle, StyleProp } from "react-native";
+import { StyleSheet, Pressable, ViewStyle, StyleProp, View } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -16,7 +17,7 @@ interface ButtonProps {
   title: string;
   style?: StyleProp<ViewStyle>;
   disabled?: boolean;
-  variant?: 'primary' | 'outline' | 'outlineLight' | 'danger';
+  variant?: 'primary' | 'secondary' | 'outline' | 'outlineLight' | 'danger';
 }
 
 const springConfig: WithSpringConfig = {
@@ -57,11 +58,15 @@ export function Button({
 
   const getButtonStyle = () => {
     switch (variant) {
+      case 'secondary':
+        return {
+          backgroundColor: 'rgba(255, 255, 255, 0.95)',
+        };
       case 'outline':
         return {
           backgroundColor: 'transparent',
           borderWidth: 2,
-          borderColor: BrandColors.primary,
+          borderColor: BrandColors.white,
         };
       case 'outlineLight':
         return {
@@ -76,16 +81,15 @@ export function Button({
           borderColor: BrandColors.danger,
         };
       default:
-        return {
-          backgroundColor: BrandColors.primary,
-        };
+        return {};
     }
   };
 
   const getTextColor = () => {
     switch (variant) {
+      case 'secondary':
+        return '#1A5C6A';
       case 'outline':
-        return BrandColors.primary;
       case 'outlineLight':
         return BrandColors.white;
       case 'danger':
@@ -94,6 +98,33 @@ export function Button({
         return BrandColors.white;
     }
   };
+
+  if (variant === 'primary') {
+    return (
+      <AnimatedPressable
+        onPress={disabled ? undefined : onPress}
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
+        disabled={disabled}
+        style={[
+          { opacity: disabled ? 0.5 : 1 },
+          style,
+          animatedStyle,
+        ]}
+      >
+        <LinearGradient
+          colors={['#3A9D7C', '#2B8A9D']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          style={styles.gradientButton}
+        >
+          <ThemedText style={[styles.buttonText, { color: BrandColors.white }]}>
+            {title}
+          </ThemedText>
+        </LinearGradient>
+      </AnimatedPressable>
+    );
+  }
 
   return (
     <AnimatedPressable
@@ -119,9 +150,17 @@ export function Button({
 const styles = StyleSheet.create({
   button: {
     height: Spacing.buttonHeight,
-    borderRadius: BorderRadius.sm,
+    borderRadius: BorderRadius.full,
     alignItems: "center",
     justifyContent: "center",
+    paddingHorizontal: Spacing["2xl"],
+  },
+  gradientButton: {
+    height: Spacing.buttonHeight,
+    borderRadius: BorderRadius.full,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: Spacing["2xl"],
   },
   buttonText: {
     ...Typography.body,
