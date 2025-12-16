@@ -1,6 +1,6 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Feather } from '@expo/vector-icons';
+import { Feather, FontAwesome5 } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
 import { Platform, StyleSheet } from 'react-native';
 import HomeStackNavigator from '@/navigation/HomeStackNavigator';
@@ -86,7 +86,7 @@ export default function MainTabNavigator({ onLogout }: MainTabNavigatorProps) {
           ...headerConfig,
           title: t('earnings'),
           tabBarIcon: ({ color, size }) => (
-            <Feather name="dollar-sign" size={size} color={color} />
+            <FontAwesome5 name="rupee-sign" size={size - 2} color={color} />
           ),
         }}
       />
