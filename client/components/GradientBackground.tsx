@@ -11,9 +11,9 @@ interface GradientBackgroundProps {
 
 const { width, height } = Dimensions.get('window');
 
-function TriangularMeshPattern() {
-  const cellWidth = 48;
-  const cellHeight = 42;
+function IsometricCubeGridPattern() {
+  const size = 55;
+  const h = size * 0.866; // height for equilateral triangles
   
   return (
     <Svg
@@ -23,38 +23,94 @@ function TriangularMeshPattern() {
     >
       <Defs>
         <Pattern
-          id="triangularMesh"
-          width={cellWidth}
-          height={cellHeight}
+          id="isometricGrid"
+          width={size}
+          height={h}
           patternUnits="userSpaceOnUse"
         >
+          {/* Vertical left line */}
           <Path
-            d={`M 0,${cellHeight} L ${cellWidth / 2},0 L ${cellWidth},${cellHeight}`}
-            stroke="rgba(255,255,255,0.12)"
-            strokeWidth={0.75}
+            d={`M ${size * 0.25},0 L ${size * 0.25},${h}`}
+            stroke="rgba(255,255,255,0.13)"
+            strokeWidth="0.8"
+            fill="none"
+          />
+          {/* Vertical right line */}
+          <Path
+            d={`M ${size * 0.75},0 L ${size * 0.75},${h}`}
+            stroke="rgba(255,255,255,0.13)"
+            strokeWidth="0.8"
+            fill="none"
+          />
+          {/* Top-right diagonal */}
+          <Path
+            d={`M 0,${h * 0.5} L ${size * 0.5},0 L ${size},${h * 0.5}`}
+            stroke="rgba(255,255,255,0.13)"
+            strokeWidth="0.8"
+            fill="none"
+          />
+          {/* Bottom-left diagonal */}
+          <Path
+            d={`M 0,${h * 0.5} L ${size * 0.5},${h} L ${size},${h * 0.5}`}
+            stroke="rgba(255,255,255,0.13)"
+            strokeWidth="0.8"
+            fill="none"
+          />
+          {/* Top-left edges */}
+          <Path
+            d={`M ${size * 0.25},0 L 0,${h * 0.25}`}
+            stroke="rgba(255,255,255,0.13)"
+            strokeWidth="0.8"
             fill="none"
           />
           <Path
-            d={`M 0,0 L ${cellWidth / 2},${cellHeight} L ${cellWidth},0`}
-            stroke="rgba(255,255,255,0.12)"
-            strokeWidth={0.75}
+            d={`M ${size * 0.25},0 L ${size * 0.5},${h * 0.25}`}
+            stroke="rgba(255,255,255,0.13)"
+            strokeWidth="0.8"
+            fill="none"
+          />
+          {/* Top-right edges */}
+          <Path
+            d={`M ${size * 0.75},0 L ${size * 0.5},${h * 0.25}`}
+            stroke="rgba(255,255,255,0.13)"
+            strokeWidth="0.8"
             fill="none"
           />
           <Path
-            d={`M 0,0 L 0,${cellHeight}`}
-            stroke="rgba(255,255,255,0.12)"
-            strokeWidth={0.75}
+            d={`M ${size * 0.75},0 L ${size},${h * 0.25}`}
+            stroke="rgba(255,255,255,0.13)"
+            strokeWidth="0.8"
+            fill="none"
+          />
+          {/* Bottom-left edges */}
+          <Path
+            d={`M ${size * 0.25},${h} L 0,${h * 0.75}`}
+            stroke="rgba(255,255,255,0.13)"
+            strokeWidth="0.8"
             fill="none"
           />
           <Path
-            d={`M ${cellWidth},0 L ${cellWidth},${cellHeight}`}
-            stroke="rgba(255,255,255,0.12)"
-            strokeWidth={0.75}
+            d={`M ${size * 0.25},${h} L ${size * 0.5},${h * 0.75}`}
+            stroke="rgba(255,255,255,0.13)"
+            strokeWidth="0.8"
+            fill="none"
+          />
+          {/* Bottom-right edges */}
+          <Path
+            d={`M ${size * 0.75},${h} L ${size * 0.5},${h * 0.75}`}
+            stroke="rgba(255,255,255,0.13)"
+            strokeWidth="0.8"
+            fill="none"
+          />
+          <Path
+            d={`M ${size * 0.75},${h} L ${size},${h * 0.75}`}
+            stroke="rgba(255,255,255,0.13)"
+            strokeWidth="0.8"
             fill="none"
           />
         </Pattern>
       </Defs>
-      <Rect x="0" y="0" width="100%" height="100%" fill="url(#triangularMesh)" />
+      <Rect x="0" y="0" width="100%" height="100%" fill="url(#isometricGrid)" />
     </Svg>
   );
 }
@@ -67,7 +123,7 @@ export function GradientBackground({ children, showPattern = true }: GradientBac
       end={{ x: 0.5, y: 1 }}
       style={styles.container}
     >
-      {showPattern && <TriangularMeshPattern />}
+      {showPattern && <IsometricCubeGridPattern />}
       <View style={styles.content}>
         {children}
       </View>
