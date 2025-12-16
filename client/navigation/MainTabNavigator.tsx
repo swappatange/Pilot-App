@@ -4,7 +4,7 @@ import { Feather, FontAwesome5 } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
 import { Platform, StyleSheet } from 'react-native';
 import HomeStackNavigator from '@/navigation/HomeStackNavigator';
-import CalendarScreen from '@/screens/CalendarScreen';
+import CalendarStackNavigator from '@/navigation/CalendarStackNavigator';
 import EarningsScreen from '@/screens/EarningsScreen';
 import HistoryScreen from '@/screens/HistoryScreen';
 import ProfileScreen from '@/screens/ProfileScreen';
@@ -81,12 +81,10 @@ export default function MainTabNavigator({ onLogout }: MainTabNavigatorProps) {
       />
       <Tab.Screen
         name="CalendarTab"
-        component={CalendarScreen}
+        component={CalendarStackNavigator}
         options={{
-          headerShown: true,
-          headerTitle: t('calendar'),
-          ...headerConfig,
-          title: t('calendar'),
+          headerShown: false,
+          title: t('bookings'),
           tabBarIcon: ({ color, size }) => (
             <Feather name="calendar" size={size} color={color} />
           ),

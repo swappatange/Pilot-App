@@ -2,7 +2,8 @@ import React, { useState, useMemo } from 'react';
 import { View, StyleSheet, ScrollView, Pressable } from 'react-native';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useHeaderHeight } from '@react-navigation/elements';
-import { useNavigation, NavigationProp } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Feather } from '@expo/vector-icons';
 import { ThemedText } from '@/components/ThemedText';
 import { GradientBackground } from '@/components/GradientBackground';
@@ -10,10 +11,7 @@ import { Card } from '@/components/Card';
 import { useTheme } from '@/hooks/useTheme';
 import { useApp, Booking, BookingStatus } from '@/context/AppContext';
 import { BrandColors, Spacing, BorderRadius, Typography } from '@/constants/theme';
-
-type RootStackParamList = {
-  BookingDetail: { bookingId: string };
-};
+import { CalendarStackParamList } from '@/navigation/CalendarStackNavigator';
 
 type FilterType = 'accepted' | 'all';
 
@@ -40,7 +38,7 @@ export default function CalendarScreen() {
   const headerHeight = useHeaderHeight();
   const { theme } = useTheme();
   const { t, bookings, operator } = useApp();
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const navigation = useNavigation<NativeStackNavigationProp<CalendarStackParamList>>();
 
   const today = new Date();
   const [currentMonth, setCurrentMonth] = useState(new Date(today.getFullYear(), today.getMonth(), 1));
