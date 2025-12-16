@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import { View, StyleSheet, Dimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import Svg, { Path, Line, Defs, Pattern, Rect, G } from 'react-native-svg';
+import Svg, { Path, G } from 'react-native-svg';
 
 interface GradientBackgroundProps {
   children: ReactNode;
@@ -10,11 +10,11 @@ interface GradientBackgroundProps {
 
 const { width, height } = Dimensions.get('window');
 
-const CUBE_COLOR = '#6B9B5B';
-const CUBE_STROKE_WIDTH = 1.5;
-const CUBE_OPACITY = 0.85;
+const CUBE_COLOR = '#3F8B63';
+const CUBE_SIZE = 72;
+const CUBE_SPACING = 48;
 
-function IsometricCube({ x, y, size, opacity = CUBE_OPACITY }: { x: number; y: number; size: number; opacity?: number }) {
+function IsometricCubeOutline({ x, y, size, opacity }: { x: number; y: number; size: number; opacity: number }) {
   const w = size;
   const h = size * 0.577;
   
@@ -44,66 +44,50 @@ function IsometricCube({ x, y, size, opacity = CUBE_OPACITY }: { x: number; y: n
 
   return (
     <G opacity={opacity}>
-      <Path d={topFace} stroke={CUBE_COLOR} strokeWidth={CUBE_STROKE_WIDTH} fill="none" />
-      <Path d={leftFace} stroke={CUBE_COLOR} strokeWidth={CUBE_STROKE_WIDTH} fill="none" />
-      <Path d={rightFace} stroke={CUBE_COLOR} strokeWidth={CUBE_STROKE_WIDTH} fill="none" />
+      <Path d={topFace} stroke={CUBE_COLOR} strokeWidth={1} fill="none" />
+      <Path d={leftFace} stroke={CUBE_COLOR} strokeWidth={1} fill="none" />
+      <Path d={rightFace} stroke={CUBE_COLOR} strokeWidth={1} fill="none" />
     </G>
   );
 }
 
-function VerticalLinesTexture() {
-  const lines = [];
-  const lineSpacing = 4;
-  const numLines = Math.ceil(width / lineSpacing);
-  
-  for (let i = 0; i < numLines; i++) {
-    const x = i * lineSpacing;
-    const opacity = Math.random() * 0.08 + 0.02;
-    const lineHeight = height * (0.3 + Math.random() * 0.7);
-    const startY = Math.random() * height * 0.3;
-    
-    lines.push(
-      <Line
-        key={`line-${i}`}
-        x1={x}
-        y1={startY}
-        x2={x}
-        y2={startY + lineHeight}
-        stroke={CUBE_COLOR}
-        strokeWidth={0.5}
-        opacity={opacity}
-      />
-    );
-  }
-  
-  return <>{lines}</>;
-}
-
 function CubePattern() {
-  const cubeSize = 80;
+  const cubes: { x: number; y: number; size: number; opacity: number }[] = [];
   
-  const cubes = [
-    { x: -20, y: height - 50, size: cubeSize, opacity: 0.9 },
-    { x: cubeSize * 0.4, y: height - 50 - cubeSize * 0.3, size: cubeSize, opacity: 0.9 },
-    { x: cubeSize * 0.8, y: height - 50 - cubeSize * 0.6, size: cubeSize, opacity: 0.85 },
-    { x: cubeSize * 1.2, y: height - 50 - cubeSize * 0.9, size: cubeSize, opacity: 0.8 },
-    { x: cubeSize * 1.6, y: height - 50 - cubeSize * 1.2, size: cubeSize, opacity: 0.75 },
-    { x: cubeSize * 2.0, y: height - 50 - cubeSize * 1.5, size: cubeSize, opacity: 0.7 },
-    { x: cubeSize * 2.4, y: height - 50 - cubeSize * 1.8, size: cubeSize, opacity: 0.65 },
+  const leftClusterX = width * 0.14;
+  const rightClusterX = width * 0.86;
+  const verticalStart = height * 0.40;
+  const verticalEnd = height * 0.88;
+  
+  const generateStairCluster = (baseX: number, isRight: boolean) => {
+    const clusterCubes: { x: number; y: number; size: number; opacity: number }[] = [];
+    const rows = 5;
     
-    { x: -20, y: height - 50 - cubeSize * 0.6, size: cubeSize, opacity: 0.85 },
-    { x: cubeSize * 0.4, y: height - 50 - cubeSize * 0.9, size: cubeSize, opacity: 0.8 },
-    { x: cubeSize * 0.8, y: height - 50 - cubeSize * 1.2, size: cubeSize, opacity: 0.75 },
-    { x: cubeSize * 1.2, y: height - 50 - cubeSize * 1.5, size: cubeSize, opacity: 0.7 },
+    for (let row = 0; row < rows; row++) {
+      const cubesInRow = rows - row;
+      const rowY = verticalEnd - (row * CUBE_SPACING * 0.8);
+      const baseOpacity = 0.32 - (row * 0.06);
+      
+      for (let col = 0; col < cubesInRow; col++) {
+        const offsetX = isRight 
+          ? baseX - (col * CUBE_SIZE * 0.5) - (row * CUBE_SIZE * 0.25)
+          : baseX + (col * CUBE_SIZE * 0.5) + (row * CUBE_SIZE * 0.25);
+        const offsetY = rowY - (col * CUBE_SIZE * 0.3);
+        
+        clusterCubes.push({
+          x: offsetX,
+          y: offsetY,
+          size: CUBE_SIZE,
+          opacity: Math.max(0.08, baseOpacity - (col * 0.04)),
+        });
+      }
+    }
     
-    { x: -20, y: height - 50 - cubeSize * 1.2, size: cubeSize, opacity: 0.7 },
-    { x: cubeSize * 0.4, y: height - 50 - cubeSize * 1.5, size: cubeSize, opacity: 0.65 },
-    
-    { x: width - cubeSize * 1.5, y: height - 100, size: cubeSize * 1.2, opacity: 0.8 },
-    { x: width - cubeSize * 0.8, y: height - 100 - cubeSize * 0.4, size: cubeSize * 1.2, opacity: 0.75 },
-    { x: width - cubeSize * 1.5, y: height - 100 - cubeSize * 0.8, size: cubeSize * 1.2, opacity: 0.7 },
-    { x: width - cubeSize * 0.8, y: height - 100 - cubeSize * 1.2, size: cubeSize * 1.2, opacity: 0.65 },
-  ];
+    return clusterCubes;
+  };
+  
+  cubes.push(...generateStairCluster(leftClusterX - CUBE_SIZE, false));
+  cubes.push(...generateStairCluster(rightClusterX, true));
 
   return (
     <Svg
@@ -111,9 +95,8 @@ function CubePattern() {
       height={height}
       style={StyleSheet.absoluteFill}
     >
-      <VerticalLinesTexture />
       {cubes.map((cube, index) => (
-        <IsometricCube
+        <IsometricCubeOutline
           key={`cube-${index}`}
           x={cube.x}
           y={cube.y}
@@ -128,7 +111,8 @@ function CubePattern() {
 export function GradientBackground({ children, showPattern = true }: GradientBackgroundProps) {
   return (
     <LinearGradient
-      colors={['#0A1A14', '#0D2818', '#0A1A14']}
+      colors={['#103B2F', '#1F5C46', '#1A7057', '#0E4F63']}
+      locations={[0, 0.42, 0.68, 1]}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
       style={styles.container}
