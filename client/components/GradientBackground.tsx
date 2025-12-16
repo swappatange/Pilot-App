@@ -5,7 +5,7 @@ interface GradientBackgroundProps {
   children: ReactNode;
 }
 
-const backgroundImage = require('../assets/Background_theme.png');
+const backgroundImage = require('../assets/atomik-background.png');
 const FALLBACK_COLOR = '#1A5C45';
 
 export function GradientBackground({ children }: GradientBackgroundProps) {
