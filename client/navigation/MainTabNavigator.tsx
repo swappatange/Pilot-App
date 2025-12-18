@@ -94,9 +94,7 @@ export default function MainTabNavigator({ onLogout }: MainTabNavigatorProps) {
         name="EarningsTab"
         component={EarningsScreen}
         options={{
-          headerShown: true,
-          headerTitle: t('earnings'),
-          ...headerConfig,
+          headerShown: false,
           title: t('earnings'),
           tabBarIcon: ({ color, size }) => (
             <FontAwesome5 name="rupee-sign" size={size - 2} color={color} />
@@ -107,9 +105,7 @@ export default function MainTabNavigator({ onLogout }: MainTabNavigatorProps) {
         name="HistoryTab"
         component={HistoryScreen}
         options={{
-          headerShown: true,
-          headerTitle: t('history'),
-          ...headerConfig,
+          headerShown: false,
           title: t('history'),
           tabBarIcon: ({ color, size }) => (
             <Feather name="clock" size={size} color={color} />

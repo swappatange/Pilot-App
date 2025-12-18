@@ -41,14 +41,14 @@ export default function CalendarStackNavigator() {
         name="CalendarMain"
         component={CalendarScreen}
         options={{
-          headerTitle: t('bookings'),
+          headerShown: false,
         }}
       />
       <Stack.Screen
         name="BookingDetail"
         component={BookingDetailScreen}
         options={{
-          headerTitle: t('bookingDetails'),
+          headerShown: false,
         }}
       />
     </Stack.Navigator>

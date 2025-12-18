@@ -54,7 +54,7 @@ export default function ProfileStackNavigator({ onLogout }: ProfileStackNavigato
       <Stack.Screen
         name="ProfileMain"
         options={{
-          headerTitle: t('profile'),
+          headerShown: false,
         }}
       >
         {() => <ProfileScreen onLogout={onLogout} />}
@@ -63,28 +63,28 @@ export default function ProfileStackNavigator({ onLogout }: ProfileStackNavigato
         name="HelpCenter"
         component={HelpCenterScreen}
         options={{
-          headerTitle: t('helpCenter'),
+          headerShown: false,
         }}
       />
       <Stack.Screen
         name="ContactSupport"
         component={ContactSupportScreen}
         options={{
-          headerTitle: t('contactSupport'),
+          headerShown: false,
         }}
       />
       <Stack.Screen
         name="TermsOfService"
         component={TermsOfServiceScreen}
         options={{
-          headerTitle: t('termsOfService'),
+          headerShown: false,
         }}
       />
       <Stack.Screen
         name="PrivacyPolicy"
         component={PrivacyPolicyScreen}
         options={{
-          headerTitle: t('privacyPolicy'),
+          headerShown: false,
         }}
       />
     </Stack.Navigator>

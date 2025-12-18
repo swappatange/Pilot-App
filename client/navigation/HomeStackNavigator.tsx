@@ -32,14 +32,14 @@ export default function HomeStackNavigator() {
         name="BookingsList"
         component={BookingsListScreen}
         options={{
-          headerTitle: t('bookings'),
+          headerShown: false,
         }}
       />
       <Stack.Screen
         name="BookingDetail"
         component={BookingDetailScreen}
         options={{
-          headerTitle: t('bookingDetails'),
+          headerShown: false,
         }}
       />
     </Stack.Navigator>
