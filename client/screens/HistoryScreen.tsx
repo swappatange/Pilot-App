@@ -101,7 +101,7 @@ export default function HistoryScreen() {
 
   return (
     <GradientBackground>
-      <View style={[styles.filterContainer, { marginTop: insets.top + Spacing.lg }]}>
+      <View style={[styles.filterContainer, { marginTop: insets.top + Spacing.xl }]}>
         <FlatList
           horizontal
           data={filters}

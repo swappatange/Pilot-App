@@ -33,7 +33,7 @@ export default function TermsOfServiceScreen() {
         contentContainerStyle={[
           styles.scrollContent,
           {
-            paddingTop: headerHeight + Spacing.lg,
+            paddingTop: headerHeight + Spacing.xl,
             paddingBottom: insets.bottom + Spacing.xl,
           },
         ]}

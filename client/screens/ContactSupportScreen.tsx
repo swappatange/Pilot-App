@@ -61,7 +61,7 @@ export default function ContactSupportScreen() {
         contentContainerStyle={[
           styles.scrollContent,
           {
-            paddingTop: headerHeight + Spacing.lg,
+            paddingTop: headerHeight + Spacing.xl,
             paddingBottom: insets.bottom + Spacing.xl,
           },
         ]}

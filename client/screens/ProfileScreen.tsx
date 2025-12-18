@@ -142,7 +142,7 @@ export default function ProfileScreen({ onLogout }: ProfileScreenProps) {
         contentContainerStyle={[
           styles.scrollContent,
           {
-            paddingTop: insets.top + Spacing.lg,
+            paddingTop: insets.top + Spacing.xl,
             paddingBottom: tabBarHeight + Spacing.xl,
           },
         ]}
