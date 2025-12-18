@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, FlatList, Pressable, ScrollView } from 'react-native';
+import { View, StyleSheet, FlatList, Pressable } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { Feather } from '@expo/vector-icons';
@@ -37,12 +37,7 @@ export default function BookingsListScreen({ navigation }: Props) {
 
   return (
     <GradientBackground>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={{ marginTop: insets.top + Spacing.lg }}
-        contentContainerStyle={styles.tabsContainer}
-      >
+      <View style={[styles.tabsContainer, { marginTop: insets.top + Spacing.lg }]}>
         {tabs.map((tab) => {
           const isActive = activeTab === tab.key;
           return (
@@ -68,7 +63,7 @@ export default function BookingsListScreen({ navigation }: Props) {
             </Pressable>
           );
         })}
-      </ScrollView>
+      </View>
 
       <FlatList
         data={bookings}
@@ -108,17 +103,15 @@ const styles = StyleSheet.create({
   tabsContainer: {
     flexDirection: 'row',
     paddingHorizontal: Spacing.lg,
-    paddingRight: Spacing.lg,
-    paddingBottom: Spacing.lg,
+    marginBottom: Spacing.lg,
     gap: Spacing.sm,
   },
   tab: {
+    flex: 1,
     paddingVertical: Spacing.md,
-    paddingHorizontal: Spacing.lg,
     borderRadius: BorderRadius.full,
     borderWidth: 1,
     alignItems: 'center',
-    minWidth: 90,
   },
   tabText: {
     ...Typography.small,
