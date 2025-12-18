@@ -13,7 +13,7 @@ import { BrandColors, Spacing, BorderRadius, Typography } from '@/constants/them
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { HomeStackParamList } from '@/navigation/HomeStackNavigator';
 
-type TabType = 'pending' | 'active' | 'completed';
+type TabType = 'pending' | 'active' | 'completed' | 'cancelled';
 
 interface Props {
   navigation: NativeStackNavigationProp<HomeStackParamList, 'BookingsList'>;
@@ -30,6 +30,7 @@ export default function BookingsListScreen({ navigation }: Props) {
     { key: 'pending', label: t('pending'), statuses: ['pending'] },
     { key: 'active', label: t('active'), statuses: ['active', 'in_progress'] },
     { key: 'completed', label: t('completed'), statuses: ['completed'] },
+    { key: 'cancelled', label: t('cancelled'), statuses: ['cancelled'] },
   ];
 
   const bookings = getBookingsByStatus(tabs.find(tab => tab.key === activeTab)?.statuses || []);
@@ -75,13 +76,13 @@ export default function BookingsListScreen({ navigation }: Props) {
           <BookingCard
             booking={item}
             onPress={() => navigation.navigate('BookingDetail', { bookingId: item.id })}
-            showActions={activeTab !== 'completed'}
+            showActions={activeTab !== 'completed' && activeTab !== 'cancelled'}
           />
         )}
         ListEmptyComponent={
           <Card style={styles.emptyCard}>
             <Feather
-              name={activeTab === 'completed' ? 'archive' : 'inbox'}
+              name={activeTab === 'completed' || activeTab === 'cancelled' ? 'archive' : 'inbox'}
               size={48}
               color={theme.textSecondary}
             />
