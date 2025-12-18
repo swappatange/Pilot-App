@@ -3,7 +3,6 @@ import { View, StyleSheet, ScrollView, Pressable, Platform, Modal } from 'react-
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { Feather } from '@expo/vector-icons';
-import * as Location from 'expo-location';
 import { ThemedText } from '@/components/ThemedText';
 import { GradientBackground } from '@/components/GradientBackground';
 import { Card } from '@/components/Card';
@@ -72,32 +71,25 @@ export default function DashboardScreen({ navigation }: Props) {
   useEffect(() => {
     const fetchWeather = async () => {
       try {
+        if (!operator?.homeLatitude || !operator?.homeLongitude) {
+          setLocationError('Home location not set');
+          return;
+        }
+
         if (Platform.OS === 'web') {
           const mockWeather: WeatherData = {
             temperature: 28,
             humidity: 65,
             windSpeed: 12,
             weatherCode: 1,
-            location: 'Current Location',
+            location: 'Home Location',
           };
           setWeather(mockWeather);
           return;
         }
 
-        const { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== 'granted') {
-          setLocationError('Location permission denied');
-          return;
-        }
-
-        const location = await Location.getCurrentPositionAsync({
-          accuracy: Location.Accuracy.Balanced,
-        });
-
-        const { latitude, longitude } = location.coords;
-
         const response = await fetch(
-          `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code&timezone=auto`
+          `https://api.open-meteo.com/v1/forecast?latitude=${operator.homeLatitude}&longitude=${operator.homeLongitude}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code&timezone=auto`
         );
         const data = await response.json();
 
@@ -107,7 +99,7 @@ export default function DashboardScreen({ navigation }: Props) {
             humidity: data.current.relative_humidity_2m,
             windSpeed: Math.round(data.current.wind_speed_10m),
             weatherCode: data.current.weather_code,
-            location: 'Current Location',
+            location: operator?.address || 'Home Location',
           });
         }
       } catch (error) {
@@ -117,7 +109,7 @@ export default function DashboardScreen({ navigation }: Props) {
     };
 
     fetchWeather();
-  }, []);
+  }, [operator?.homeLatitude, operator?.homeLongitude, operator?.address]);
 
   return (
     <GradientBackground>
