@@ -312,7 +312,7 @@ export default function ProfileScreen({ onLogout }: ProfileScreenProps) {
             <LocationPicker
               value={operator?.address || ''}
               onSelect={handleLocationSelect}
-              placeholder={t('searchLocation')}
+              placeholder={t('homeLocation')}
             />
           </View>
         </Pressable>

@@ -135,6 +135,8 @@ export const translations: Record<Language, Record<string, string>> = {
     account: 'Account',
     homeLocation: 'Home Location',
     editHomeLocation: 'Edit Home Location',
+    searchLocation: 'Search Location',
+    searchLocation: 'Search Location',
     saveLocation: 'Save Location',
     pilotInfo: 'Pilot Information',
     deleteAccount: 'Delete Account',
