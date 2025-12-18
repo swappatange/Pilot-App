@@ -8,6 +8,7 @@ import { GradientBackground } from '@/components/GradientBackground';
 import { Card } from '@/components/Card';
 import { Button } from '@/components/Button';
 import { StatusBadge } from '@/components/StatusBadge';
+import OTPVerificationModal from '@/components/OTPVerificationModal';
 import { useTheme } from '@/hooks/useTheme';
 import { useApp, Booking, BookingStatus } from '@/context/AppContext';
 import { BrandColors, Spacing, BorderRadius, Typography } from '@/constants/theme';
@@ -64,6 +65,7 @@ export default function BookingDetailScreen({ navigation, route }: Props) {
   const { t, bookings, updateBookingStatus } = useApp();
   const [weather, setWeather] = useState<WeatherForecast | null>(null);
   const [weatherLoading, setWeatherLoading] = useState(true);
+  const [showOTPModal, setShowOTPModal] = useState(false);
 
   const booking = bookings.find(b => b.id === route.params.bookingId);
 
@@ -148,8 +150,13 @@ export default function BookingDetailScreen({ navigation, route }: Props) {
   };
 
   const handleStartSpray = () => {
+    setShowOTPModal(true);
+  };
+
+  const handleOTPVerify = (otp: string) => {
+    setShowOTPModal(false);
     updateBookingStatus(booking.id, 'in_progress');
-    Alert.alert('Spray Started', 'You have started the spray operation');
+    Alert.alert(t('sprayStarted'), t('sprayStartedMessage'));
   };
 
   const handleComplete = () => {
@@ -187,7 +194,14 @@ export default function BookingDetailScreen({ navigation, route }: Props) {
   };
 
   return (
-    <GradientBackground>
+    <>
+      <OTPVerificationModal
+        visible={showOTPModal}
+        farmerPhone={booking?.farmerPhone || ''}
+        onVerify={handleOTPVerify}
+        onCancel={() => setShowOTPModal(false)}
+      />
+      <GradientBackground>
       <ScrollView
         contentContainerStyle={[
           styles.scrollContent,
@@ -391,6 +405,7 @@ export default function BookingDetailScreen({ navigation, route }: Props) {
         </View>
       )}
     </GradientBackground>
+    </>
   );
 }
 

@@ -13,7 +13,7 @@ import { BrandColors, Spacing, BorderRadius, Typography } from '@/constants/them
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { HomeStackParamList } from '@/navigation/HomeStackNavigator';
 
-type TabType = 'pending' | 'active' | 'completed' | 'cancelled';
+type TabType = 'pending' | 'accepted' | 'completed' | 'cancelled';
 
 interface Props {
   navigation: NativeStackNavigationProp<HomeStackParamList, 'BookingsList'>;
@@ -28,7 +28,7 @@ export default function BookingsListScreen({ navigation }: Props) {
 
   const tabs: { key: TabType; label: string; statuses: BookingStatus[] }[] = [
     { key: 'pending', label: t('pending'), statuses: ['pending'] },
-    { key: 'active', label: t('active'), statuses: ['active', 'in_progress'] },
+    { key: 'accepted', label: t('acceptedOnly'), statuses: ['active', 'in_progress'] },
     { key: 'completed', label: t('completed'), statuses: ['completed'] },
     { key: 'cancelled', label: t('cancelled'), statuses: ['cancelled'] },
   ];
