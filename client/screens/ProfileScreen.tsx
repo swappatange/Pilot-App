@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, ScrollView, Pressable, Alert, Modal, TextInput } from 'react-native';
-import { useHeaderHeight } from '@react-navigation/elements';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -22,7 +22,7 @@ interface ProfileScreenProps {
 }
 
 export default function ProfileScreen({ onLogout }: ProfileScreenProps) {
-  const headerHeight = useHeaderHeight();
+  const insets = useSafeAreaInsets();
   const tabBarHeight = useBottomTabBarHeight();
   const navigation = useNavigation<NavigationProp>();
   const { theme } = useTheme();
@@ -132,7 +132,7 @@ export default function ProfileScreen({ onLogout }: ProfileScreenProps) {
         contentContainerStyle={[
           styles.scrollContent,
           {
-            paddingTop: headerHeight + Spacing.lg,
+            paddingTop: insets.top + Spacing.lg,
             paddingBottom: tabBarHeight + Spacing.xl,
           },
         ]}

@@ -191,7 +191,7 @@ export default function BookingDetailScreen({ navigation, route }: Props) {
       <ScrollView
         contentContainerStyle={[
           styles.scrollContent,
-          { paddingBottom: tabBarHeight + (booking.status !== 'completed' && booking.status !== 'cancelled' ? 100 : Spacing.xl) },
+          { paddingTop: insets.top + Spacing.lg, paddingBottom: tabBarHeight + (booking.status !== 'completed' && booking.status !== 'cancelled' ? 100 : Spacing.xl) },
         ]}
         showsVerticalScrollIndicator={false}
       >

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, FlatList, Pressable } from 'react-native';
-import { useHeaderHeight } from '@react-navigation/elements';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { Feather } from '@expo/vector-icons';
 import { ThemedText } from '@/components/ThemedText';
@@ -20,7 +20,7 @@ interface Props {
 }
 
 export default function BookingsListScreen({ navigation }: Props) {
-  const headerHeight = useHeaderHeight();
+  const insets = useSafeAreaInsets();
   const tabBarHeight = useBottomTabBarHeight();
   const { theme } = useTheme();
   const { t, getBookingsByStatus } = useApp();
@@ -36,7 +36,7 @@ export default function BookingsListScreen({ navigation }: Props) {
 
   return (
     <GradientBackground>
-      <View style={[styles.tabsContainer, { marginTop: headerHeight + Spacing.sm }]}>
+      <View style={[styles.tabsContainer, { marginTop: insets.top + Spacing.lg }]}>
         {tabs.map((tab) => {
           const isActive = activeTab === tab.key;
           return (

@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { View, StyleSheet, ScrollView, Pressable } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
-import { useHeaderHeight } from '@react-navigation/elements';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Feather } from '@expo/vector-icons';
@@ -34,8 +34,8 @@ function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: numbe
 }
 
 export default function CalendarScreen() {
+  const insets = useSafeAreaInsets();
   const tabBarHeight = useBottomTabBarHeight();
-  const headerHeight = useHeaderHeight();
   const { theme } = useTheme();
   const { t, bookings, operator } = useApp();
   const navigation = useNavigation<NativeStackNavigationProp<CalendarStackParamList>>();
@@ -252,7 +252,7 @@ export default function CalendarScreen() {
         contentContainerStyle={[
           styles.scrollContent,
           {
-            paddingTop: headerHeight + Spacing.lg,
+            paddingTop: insets.top + Spacing.lg,
             paddingBottom: tabBarHeight + Spacing.xl,
           },
         ]}

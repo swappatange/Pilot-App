@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, FlatList, Pressable } from 'react-native';
-import { useHeaderHeight } from '@react-navigation/elements';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { Feather } from '@expo/vector-icons';
 import { ThemedText } from '@/components/ThemedText';
@@ -13,7 +13,7 @@ import { BrandColors, Spacing, BorderRadius, Typography } from '@/constants/them
 type FilterType = 'all' | '7days' | 'month' | '3months';
 
 export default function HistoryScreen() {
-  const headerHeight = useHeaderHeight();
+  const insets = useSafeAreaInsets();
   const tabBarHeight = useBottomTabBarHeight();
   const { theme } = useTheme();
   const { t, getBookingsByStatus } = useApp();
@@ -101,7 +101,7 @@ export default function HistoryScreen() {
 
   return (
     <GradientBackground>
-      <View style={[styles.filterContainer, { marginTop: headerHeight + Spacing.sm }]}>
+      <View style={[styles.filterContainer, { marginTop: insets.top + Spacing.lg }]}>
         <FlatList
           horizontal
           data={filters}
