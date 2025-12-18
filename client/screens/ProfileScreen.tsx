@@ -8,6 +8,7 @@ import { Feather } from '@expo/vector-icons';
 import { ThemedText } from '@/components/ThemedText';
 import { GradientBackground } from '@/components/GradientBackground';
 import { Card } from '@/components/Card';
+import { LocationPicker } from '@/components/LocationPicker';
 import { useTheme } from '@/hooks/useTheme';
 import { useApp } from '@/context/AppContext';
 import { languages } from '@/constants/translations';
@@ -58,6 +59,15 @@ export default function ProfileScreen({ onLogout }: ProfileScreenProps) {
       updateOperator({ address: newAddress.trim() });
       setShowLocationModal(false);
     }
+  };
+
+  const handleLocationSelect = (location: { address: string; latitude: number; longitude: number }) => {
+    updateOperator({
+      address: location.address,
+      homeLatitude: location.latitude,
+      homeLongitude: location.longitude,
+    });
+    setShowLocationModal(false);
   };
 
   const handleEditLocation = () => {
@@ -299,28 +309,11 @@ export default function ProfileScreen({ onLogout }: ProfileScreenProps) {
         >
           <View style={[styles.modalContent, { backgroundColor: theme.backgroundSecondary }]}>
             <ThemedText style={styles.modalTitle}>{t('editHomeLocation')}</ThemedText>
-            <TextInput
-              style={[
-                styles.modalInput,
-                { backgroundColor: 'rgba(255,255,255,0.1)', color: BrandColors.white },
-              ]}
-              value={newAddress}
-              onChangeText={setNewAddress}
-              placeholder={t('homeLocation')}
-              placeholderTextColor={theme.textSecondary}
-              multiline
-              numberOfLines={3}
+            <LocationPicker
+              value={operator?.address || ''}
+              onSelect={handleLocationSelect}
+              placeholder={t('searchLocation')}
             />
-            <Pressable onPress={handleSaveLocation}>
-              <LinearGradient
-                colors={[BrandColors.primary, BrandColors.teal]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                style={styles.modalButton}
-              >
-                <ThemedText style={styles.modalButtonText}>{t('saveLocation')}</ThemedText>
-              </LinearGradient>
-            </Pressable>
           </View>
         </Pressable>
       </Modal>

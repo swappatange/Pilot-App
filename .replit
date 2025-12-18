@@ -51,3 +51,8 @@ args = "npm run all:dev"
 waitForPort = 8081
 ensurePreviewReachable = "/status"
 
+[userenv]
+
+[userenv.shared]
+EXPO_PUBLIC_GOOGLE_PLACES_API_KEY = "AIzaSyBa4_5yU_-K3jJaOfUaGQ5SEmf9iO6D_BU"
+
