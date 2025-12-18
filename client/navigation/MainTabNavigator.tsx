@@ -84,7 +84,7 @@ export default function MainTabNavigator({ onLogout }: MainTabNavigatorProps) {
         component={CalendarStackNavigator}
         options={{
           headerShown: false,
-          title: t('bookings'),
+          title: t('calendar'),
           tabBarIcon: ({ color, size }) => (
             <Feather name="calendar" size={size} color={color} />
           ),
