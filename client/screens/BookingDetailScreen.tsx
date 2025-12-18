@@ -225,11 +225,10 @@ export default function BookingDetailScreen({ navigation, route }: Props) {
 
           <DetailRow icon="map-pin" label={t('location')} value={`${booking.village}, ${booking.district}`} />
           <DetailRow icon="maximize-2" label={t('acreage')} value={`${booking.acreage} ${t('acres')}`} />
-          <DetailRow icon="layers" label={t('cropType')} value={booking.cropType} />
-          <DetailRow
-            icon="droplet"
-            label={t('sprayType')}
-            value={booking.sprayType === 'pesticide' ? t('pesticide') : t('fertilizer')}
+          <DetailRow 
+            icon="layers" 
+            label={t('cropType')} 
+            value={`${booking.cropType} - ${booking.sprayType === 'pesticide' ? t('pesticide') : t('fertilizer')}`}
           />
           <DetailRow icon="calendar" label={t('scheduledDate')} value={formatDate(booking.scheduledDate)} />
           <DetailRow icon="clock" label={t('scheduledTime')} value={booking.scheduledTime} />
