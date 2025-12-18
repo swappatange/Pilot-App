@@ -79,3 +79,11 @@ assets/                  # App assets
 - No emojis in the app
 - Mobile OTP authentication (no Twilio integration)
 - Tab-based navigation structure
+
+## Recent Features Added (Dec 18, 2024)
+1. **Google Places Location Picker** - Autocomplete address search with GPS coordinates
+2. **Automatic Weather Updates** - Dashboard weather syncs when home location changes
+3. **Masked Phone Calls** - Secure call option for booking farmer connections
+   - Setup: Configure Twilio account in environment variables (TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
+   - Backend endpoint needed: POST /api/calls/initiate - handles Twilio masked call routing
+   - Frontend: Two call options in booking details (masked secure call + direct call)

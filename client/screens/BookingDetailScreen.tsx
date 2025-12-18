@@ -126,6 +126,19 @@ export default function BookingDetailScreen({ navigation, route }: Props) {
     Linking.openURL(`tel:${booking.farmerPhone.replace(/\s/g, '')}`);
   };
 
+  const handleMaskedCall = async () => {
+    try {
+      Alert.alert(
+        t('maskedCall'),
+        t('maskedCallInitiating'),
+        [{ text: t('ok'), onPress: () => {} }]
+      );
+    } catch (error) {
+      console.error('Error initiating masked call:', error);
+      Alert.alert('Error', 'Failed to initiate masked call');
+    }
+  };
+
   const handleAccept = () => {
     updateBookingStatus(booking.id, 'active');
     Alert.alert('Booking Accepted', 'You have accepted this booking');
@@ -225,12 +238,20 @@ export default function BookingDetailScreen({ navigation, route }: Props) {
                 {booking.farmerPhone}
               </ThemedText>
             </View>
-            <Pressable
-              style={[styles.callButton, { backgroundColor: BrandColors.primary }]}
-              onPress={handleCall}
-            >
-              <Feather name="phone" size={20} color={BrandColors.white} />
-            </Pressable>
+            <View style={styles.buttonGroup}>
+              <Pressable
+                style={[styles.callButton, { backgroundColor: BrandColors.primary }]}
+                onPress={handleMaskedCall}
+              >
+                <Feather name="shield" size={18} color={BrandColors.white} />
+              </Pressable>
+              <Pressable
+                style={[styles.callButton, { backgroundColor: BrandColors.teal }]}
+                onPress={handleCall}
+              >
+                <Feather name="phone" size={18} color={BrandColors.white} />
+              </Pressable>
+            </View>
           </View>
         </Card>
 
@@ -493,6 +514,10 @@ const styles = StyleSheet.create({
   farmerPhone: {
     ...Typography.small,
     marginTop: 2,
+  },
+  buttonGroup: {
+    flexDirection: 'row',
+    gap: Spacing.sm,
   },
   callButton: {
     width: 44,
