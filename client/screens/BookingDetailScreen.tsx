@@ -234,9 +234,6 @@ export default function BookingDetailScreen({ navigation, route }: Props) {
             </View>
             <View style={styles.farmerInfo}>
               <ThemedText style={styles.farmerName}>{booking.farmerName}</ThemedText>
-              <ThemedText style={[styles.farmerPhone, { color: theme.textSecondary }]}>
-                {booking.farmerPhone}
-              </ThemedText>
             </View>
             <View style={styles.buttonGroup}>
               <Pressable
